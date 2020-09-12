@@ -1,9 +1,6 @@
 import 'dart:collection';
-
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/services/database.dart';
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 
@@ -22,7 +19,7 @@ class AuthService{
 //auth change user stream
   Stream<User> get user { // going to return as User object was stream, and who logs in. with that info we can know how to navigate him
     return _auth.onAuthStateChanged
-        .map((FirebaseUser user) => _userFromFirebaseUser(user,user.email,"",""));
+        .map((FirebaseUser user) => _userFromFirebaseUser(user," ","",""));
   }
 
 
@@ -48,9 +45,9 @@ class AuthService{
     try{
       AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
-      print(result);
+     // print(result);
       //return _userFromFirebaseUser(user, "_userList[user.uid].Groom_name","_userList[user.uid].Bride_name"); //TODO chage it because does not recognize all othe things.
-      User appUser = _userFromFirebaseUser(user,"Groom_name,Bride_name","","");
+      User appUser = _userFromFirebaseUser(user,"","","");
       //_userList.putIfAbsent(user.uid,() => appUser);
       return appUser;
     }
@@ -70,7 +67,7 @@ class AuthService{
     try{
       AuthResult result = await _auth.signInAnonymously();
       FirebaseUser user = result.user;
-      return _userFromFirebaseUser(user ," " ," ",""); // add empty string fot the othr func.
+      return _userFromFirebaseUser(user ," " ," ",""); // add empty string fot the other func.
     } catch(e){
       print(e.toString());
       return null;
@@ -89,6 +86,7 @@ class AuthService{
     try{
       return await _auth.signOut();
     }catch(e){
+      print("bad error");
       print(e.toString());
       return null;
     }

@@ -1,6 +1,4 @@
 
-
-
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/services/auth.dart';
 import 'package:socimeet/screens/home/HomeManagment.dart';
@@ -113,7 +111,7 @@ class _HomeState extends State<Home> {
                           fontFamily: "CaviarDreams",
                           fontSize: 32.0,
                           color: Colors.white, ),),
-                        Text(widget.login_user.first_name +" "+widget.login_user.last_name , style: TextStyle(
+                        Text( /*widget.login_user.first_name + " " +widget.login_user.last_name */ "AAA", style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: "CaviarDreams",
                           fontSize: 22.0,
