@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 
 
+
 class AuthService{
 
 
@@ -21,7 +22,7 @@ class AuthService{
 //auth change user stream
   Stream<User> get user { // going to return as User object was stream, and who logs in. with that info we can know how to navigate him
     return _auth.onAuthStateChanged
-        .map((FirebaseUser user) => _userFromFirebaseUser(user," "," ","");
+        .map((FirebaseUser user) => _userFromFirebaseUser(user,user.email,"",""));
   }
 
 

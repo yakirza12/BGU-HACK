@@ -21,6 +21,26 @@ class DatabaseService{
     });
   }
 
+/*  User getUserObject(String uid) async {
+
+     Future emailAddress =  userCollection.document(uid).;
+     String first_name;
+     String last_name;
+     String gender;
+
+
+    return await userCollection.document(uid).get({
+      'emailAddress': emailAddress,
+      'first_name' : first_name,
+      'last_name' : last_name,
+      'gender' : gender,
+
+    });
+  }
+*/
+
+
+
   Future addGuestData(String index ,String proximityGroup ,String last_name ,String first_name,int quantity_invited) async {
     return await userCollection.document(uid).collection('guests').document(index).
     setData({

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-
+import 'package:socimeet/models/user.dart';
 import 'home.dart';
 
 class HomeManagement extends StatefulWidget {
+
+  final User login_user;
+
+  const HomeManagement(this.login_user);
+
   get toggleViewShowHomeVsGuestManagement => toggleViewShowHomeVsGuestManagement();
 
   @override
@@ -19,7 +24,7 @@ class _HomeManagementState extends State<HomeManagement> {
   @override
   Widget build(BuildContext context) {
 
-      return Home();
+    return Home(widget.login_user);
 
   }
 }

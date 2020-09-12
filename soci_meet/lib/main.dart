@@ -113,8 +113,9 @@
 //}
 
 
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:socimeet/models/user.dart';
+import 'package:socimeet/screens/home/home.dart';
 import 'package:socimeet/screens/wrapper.dart';
 import 'package:socimeet/services/auth.dart';
 import 'package:socimeet/services/constants.dart';
@@ -138,7 +139,7 @@ class MyApp extends StatelessWidget {
           primaryColor: kPrimaryColor,
           scaffoldBackgroundColor: kBackgroundColor,
           textTheme: TextTheme(
-            display1: TextStyle(color: Color(0xFFFFAB9E),
+            display1: TextStyle(color: Colors.indigo.withOpacity(.8),//Color(0xFFFFAB9E),
               //0xFFB0CBCA
               fontWeight: FontWeight.bold,
               fontFamily: "CaviarDreams",
@@ -162,6 +163,7 @@ class MyApp extends StatelessWidget {
 
 
         home:Wrapper(),
+
       ),
     );
   }

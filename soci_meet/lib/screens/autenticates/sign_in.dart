@@ -38,9 +38,10 @@ class _SignInState extends State<SignIn2> {
               image: DecorationImage(
                 colorFilter: new ColorFilter.mode(
                     Colors.black.withOpacity(0.83), BlendMode.dstATop),
-                image: AssetImage("assets/HappyPhoto.jpg"),
+                image: AssetImage("assets/ness-meet.jpg"),
                 fit: BoxFit.cover,
               ),
+
             ),
             child: Center(
               child: Stack(
@@ -67,7 +68,7 @@ class _SignInState extends State<SignIn2> {
                                 backgroundBlendMode: BlendMode.dstATop
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(left:20.0,right:15.0,top: 20 ) ,
+                              padding: const EdgeInsets.only(left:40.0,right:15.0,top: 20 ) ,
                               child: Column(
 
                                 children: <Widget>[

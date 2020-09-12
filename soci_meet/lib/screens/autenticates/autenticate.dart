@@ -1,4 +1,4 @@
-import './register.dart';
+import 'register.dart';
 import './sign_in.dart';
 import 'package:flutter/material.dart';
 

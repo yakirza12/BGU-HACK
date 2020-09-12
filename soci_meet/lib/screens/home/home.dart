@@ -3,17 +3,22 @@
 
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/services/auth.dart';
-import 'package:socimeet/screens/home/HomrManagement';
+import 'package:socimeet/screens/home/HomeManagment.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 
 
 
 class Home extends StatefulWidget {// he made is stateless but im want it in differ because its will be my menu
 
+  final User login_user;
+
+
+  const Home(this.login_user);
 
   @override
   _HomeState createState() => _HomeState();
+
 }
 
 
@@ -21,6 +26,10 @@ class Home extends StatefulWidget {// he made is stateless but im want it in dif
 class _HomeState extends State<Home> {
 
   final AuthService _auth = AuthService();
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +78,7 @@ class _HomeState extends State<Home> {
           image: DecorationImage(
             colorFilter: new ColorFilter.mode(
                 Colors.black.withOpacity(0.83), BlendMode.dstATop),
-            image: AssetImage("assets/plaining.jpg"),
+            image: AssetImage("assets/friends1.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -81,29 +90,30 @@ class _HomeState extends State<Home> {
                   width: MediaQuery.of(context).size.width*0.90,
                   height: 150,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(22),
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(22),
                         gradient: LinearGradient(
                             begin: Alignment.bottomRight,
                             colors: [
 
-                              Colors.orangeAccent.withOpacity(.2),
-                              Colors.orangeAccent.withOpacity(.5),
+                              Colors.indigo.withOpacity(.2),
+                              Colors.indigo.withOpacity(.7),
                             ]
                         )
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
+
                         Text("Welcome Back", style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: "CaviarDreams",
                           fontSize: 32.0,
                           color: Colors.white, ),),
-                        Text("Dani and Linoy" , style: TextStyle(
+                        Text(widget.login_user.first_name +" "+widget.login_user.last_name , style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: "CaviarDreams",
                           fontSize: 22.0,
