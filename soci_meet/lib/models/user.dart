@@ -9,4 +9,5 @@ class User{ // the user object, need to be expandent in the future
 
   User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender}); //the constructor for user
 
+
 }

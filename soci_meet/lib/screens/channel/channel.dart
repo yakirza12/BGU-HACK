@@ -5,6 +5,8 @@ import 'package:socimeet/models/event.dart';
 import 'package:socimeet/models/party.dart';
 import 'package:socimeet/models/user.dart';
 
+import '../events/partyEvent.dart';
+
 
 
 /*
@@ -124,12 +126,28 @@ class _PartiesChannelState extends State<PartiesChannel> {
                       :  Colors.greenAccent,
                 ),
               ),
+              FlatButton.icon(
+                onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    partyWidget(eve)
+                            )
+
+                        );
+                },
+                icon: Icon(Icons.info),
+                label: Text(''),
+
+              )
 
             ],
           ),
         )
     );
   }
+
+
 
 
 @override
