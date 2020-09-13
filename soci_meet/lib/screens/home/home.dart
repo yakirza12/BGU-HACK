@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width*0.90,
-                  height: 150,
+                  height: 450,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(22),
                   ),
@@ -111,7 +111,7 @@ class _HomeState extends State<Home> {
                           fontFamily: "CaviarDreams",
                           fontSize: 32.0,
                           color: Colors.white, ),),
-                        Text( /*widget.login_user.first_name + " " +widget.login_user.last_name */ "AAA", style: TextStyle(
+                        Text( /*widget.login_user.first_name + " " +widget.login_user.last_name */ "Izhak", style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: "CaviarDreams",
                           fontSize: 22.0,
@@ -127,7 +127,31 @@ class _HomeState extends State<Home> {
                           ),
                          // child: Center(child: Text("Shop Now", style: TextStyle(color: Colors.grey[900], fontWeight: FontWeight.bold),)),
                         ),*/
+                        // SizedBox(height: 20,),
+                        //TODO adding floating action button
+
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: FloatingActionButton(
+                            onPressed: () {Navigator.pushNamed(context, '/shabat');},
+                            child: Text('Shabat Dinner'),
+                          ),
+                        ),
+                        // SizedBox(height: 20,),
+                        //TODO adding floating action button
+
+                        FloatingActionButton(
+                          autofocus: true,
+                          onPressed: () {Navigator.pushNamed(context, '/sport');},
+                          child: Text('sport'),
+                        ),
                         SizedBox(height: 20,),
+                        //TODO adding floating action button
+
+                        FloatingActionButton(
+                          onPressed: () {Navigator.pushNamed(context, '/party');},
+                          child: Text('Party'),
+                        ),
                       ],
                     ),
                   ),
