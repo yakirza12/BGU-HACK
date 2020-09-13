@@ -6,6 +6,7 @@ class Event {
   DateTime date;
   int numberOfParticipantes;
   User creator;
+  int counter; //how many registered
   String address;
 
 

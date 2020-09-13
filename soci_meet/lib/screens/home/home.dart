@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 
 
+
 class Home extends StatefulWidget {// he made is stateless but im want it in differ because its will be my menu
 
   final User login_user;
@@ -86,7 +87,7 @@ class _HomeState extends State<Home> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width*0.90,
-                  height: 450,
+                  height: 80,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(22),
                   ),
@@ -130,13 +131,26 @@ class _HomeState extends State<Home> {
                         // SizedBox(height: 20,),
                         //TODO adding floating action button
 
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: FloatingActionButton(
+
+                      ],
+                    ),
+                  ),
+                ),
+
+                new Expanded(
+                  flex: 2,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 20 , bottom: 0),
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      scrollDirection: Axis.vertical,
+                      children: [
+                       
+                           FloatingActionButton(
                             onPressed: () {Navigator.pushNamed(context, '/shabat');},
                             child: Text('Shabat Dinner'),
                           ),
-                        ),
+
                         // SizedBox(height: 20,),
                         //TODO adding floating action button
 
@@ -152,19 +166,6 @@ class _HomeState extends State<Home> {
                           onPressed: () {Navigator.pushNamed(context, '/party');},
                           child: Text('Party'),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                new Expanded(
-                  flex: 2,
-                  child: Container(
-                    margin: EdgeInsets.only(top: 20 , bottom: 0),
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      scrollDirection: Axis.vertical,
-                      children: [
 
                        Container(),
                       ],
