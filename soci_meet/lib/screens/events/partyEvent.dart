@@ -37,30 +37,41 @@ class _State extends State<partyWidget> {
   }
   Widget build(BuildContext context) {
     return Container(
+
+      color: Colors.lightBlue[100],
+      padding: EdgeInsets.fromLTRB(20, 30,0,0),
       child: Column(
-        children: [
+        children: <Widget>[
           Row(
             children: [
-              Text('Creator'),
-              Text('{$myEvent.creator}')
+              Text('Creator', style: TextStyle(fontSize: 20) ,),
+              SizedBox(height: 30,),
+              Text('${myEvent.creator}', style: TextStyle(fontSize: 20)),
+              SizedBox(height: 30,),
             ],
           ),
           Row(
             children: [
-              Text('Date'),
-              Text('{$myEvent.myEvent.date.toString()}')
+              Text('Date', style: TextStyle(fontSize: 20) ),
+              SizedBox(height: 30,),
+              Text('${myEvent.date.toString()}', style: TextStyle(fontSize: 20) ),
+              SizedBox(height: 30,),
             ],
           ),
           Row(
             children: [
-              Text('Adress'),
-              Text('{$myEvent.address}')
+              Text('Adress', style: TextStyle(fontSize: 20) ),
+              SizedBox(height: 30,),
+              Text('${myEvent.address}', style: TextStyle(fontSize: 20) ),
+              SizedBox(height: 30,),
             ],
           ),
           Row(
             children: [
-              Text('Number of participants'),
-              Text('{$myEvent.numberOfParticipantes}')
+              Text('Number of participants', style: TextStyle(fontSize: 20) ),
+              SizedBox(height: 30,),
+              Text('${myEvent.numberOfParticipantes}', style: TextStyle(fontSize: 20) ),
+              SizedBox(height: 30,),
             ],
           ),
           FloatingActionButton(
