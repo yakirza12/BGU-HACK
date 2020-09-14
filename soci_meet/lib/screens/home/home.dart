@@ -1,10 +1,12 @@
 import 'package:socimeet/constants.dart';
 import 'package:socimeet/models/user.dart';
+import 'package:socimeet/screens/events/partyEvent.dart';
 import 'package:socimeet/services/auth.dart';
 import 'package:socimeet/screens/home/HomeManagment.dart';
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/event.dart';
+import 'package:flutter/material.dart';
 
 import '../../models/chanel.dart';
 import '../channel/channel.dart';
@@ -41,6 +43,9 @@ class Home extends StatefulWidget {// he made is stateless but im want it in dif
 
 
 class _HomeState extends State<Home> {
+  ScrollController controller = ScrollController();
+  bool closeTopContainer = false;
+  double topContainer = 0;
 
   final AuthService _auth = AuthService();
 
@@ -50,12 +55,89 @@ class _HomeState extends State<Home> {
   static List<Event> plist = [
     Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipantes: 50,address: "Rager 155, be'er-Sheva",creator: moshe ),
     Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipantes: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
+    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
+    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
+    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
   ];
 
 
   static Channel parties = Channel(chanelName: "Parties" ,users: {"1" : moshe},events: plist );
-  static List<Channel> arryChannels = [parties];
+  static Channel shabatDinner = Channel(chanelName: "Shabat Dinner" ,users: {"1" : moshe},events: plist );
+  static Channel sport = Channel(chanelName: "Sport Games" ,users: {"1" : moshe},events: plist );
+  static List<Channel> arryChannels = [parties,shabatDinner,sport];
+
+
+
+
+
+
+
+
+  Widget cardTemplate(Event eve) {
+    return Card(
+        color: Colors.white.withOpacity(.95),
+        margin: const EdgeInsets.fromLTRB(20.0, 20.0, 16.0, 20),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                eve.address,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.grey[600],
+                ),
+              ),
+              SizedBox(height: 6.0),
+              Text(
+                '${eve.creator.first_name} ${eve.creator.last_name}',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.grey[800],
+                ),
+              ),
+              SizedBox(height: 6.0),
+              Text(
+                '${eve.counter} / ${eve.numberOfParticipantes}',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: (eve.counter == eve.numberOfParticipantes) ? Colors.red[900]
+                      :  Colors.greenAccent,
+                ),
+              ),
+              FlatButton.icon(
+                onPressed: () {
+
+                  Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              partyWidget(eve)
+                      )
+
+                  );
+                },
+                icon: Icon(Icons.info),
+                label: Text(''),
+
+              )
+
+            ],
+          ),
+        )
+    );
+  }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -63,6 +145,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    final double channelHight = size.height*0.30;
+
+
 
     return Scaffold(
 
@@ -99,10 +185,7 @@ class _HomeState extends State<Home> {
         ],
       ),*/
       body: Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
+        height: size.height,
         decoration: BoxDecoration(
           color: Color(0xFFFFCCBF),
           image: DecorationImage(
@@ -112,7 +195,382 @@ class _HomeState extends State<Home> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+
+                  SizedBox(height: 10,),
+                  Text(
+                    "     Channels",textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+
+
+              /*const SizedBox(
+                height: 5,
+              ),*/
+              AnimatedOpacity(
+
+                duration: const Duration(milliseconds: 200),
+                opacity: 0.8,
+                child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: size.width,
+                    alignment: Alignment.topCenter,
+                    height: channelHight,
+                  child: CategoriesScroller(),
+                    ),
+              ),
+              Expanded(
+
+                  child: ListView.builder(
+                      controller: controller,
+                      itemCount: plist.length,
+                      padding: EdgeInsets.only(top: 0,bottom: 0),
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        double scale = 1.0;
+                        if (topContainer > 0.5) {
+                          scale = index + 0.5 - topContainer;
+                          if (scale < 0) {
+                            scale = 0;
+                          } else if (scale > 1) {
+                            scale = 1;
+                          }
+                        }
+                        return Opacity(
+                          opacity: scale,
+                          child: Transform(
+                            transform:  Matrix4.identity()..scale(scale,scale),
+                            alignment: Alignment.bottomCenter,
+                            child: Align(
+                                heightFactor: 0.7,
+                                alignment: Alignment.topCenter,
+                                child: cardTemplate(plist[index]),
+                          ),
+                        ));
+                      })),
+            ],
+          ),
+      ),
+    );
+
+  }
+}
+
+class CategoriesScroller extends StatelessWidget {
+  const CategoriesScroller();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    final double categoryHeight = MediaQuery.of(context).size.height * 0.30 - 50;
+    return SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: FittedBox(
+              fit: BoxFit.fill,
+              alignment: Alignment.topCenter,
+              child: Row(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => {
+                      Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PartiesChannel()
+                        )
+                    )
+                    },
+                    child: Container(
+                      width: 150,
+                      margin: EdgeInsets.only(right: 20),
+                      height: categoryHeight,
+                      decoration: BoxDecoration(color: Colors.orange.shade400, borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Parties ",
+                              style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "17 Available Events",
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => {
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PartiesChannel()
+                          )
+                      )
+                    },
+                    child: Container(
+                      width: 150,
+                      margin: EdgeInsets.only(right: 20),
+                      height: categoryHeight,
+                      decoration: BoxDecoration(color: Colors.blue.shade400, borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                      child: Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "Shabat Dinner",
+                                style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "3 Available Events",
+                                style: TextStyle(fontSize: 16, color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 150,
+                    margin: EdgeInsets.only(right: 20),
+                    height: categoryHeight,
+                    decoration: BoxDecoration(color: Colors.pink.shade400, borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Sport Games",
+                            style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "12 Available Events",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+
+
+
+/*
+  Container(
+    alignment: Alignment.bottomLeft,
+    child: Column(children: <Widget>[
+            ChannelCard(
+              itemIndex: 0,
+              channel: arryChannels[0],
+              press: () {
+                Navigator.push(
+
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            PartiesChannel()
+                    )
+                );
+              },
+            ),
+            ChannelCard(
+              itemIndex: 0,
+              channel: arryChannels[1],
+              press: () {
+                Navigator.push(
+
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            PartiesChannel()
+                    )
+                );
+              },
+            ),
+            ChannelCard(
+              itemIndex: 0,
+              channel: arryChannels[2],
+              press: () {
+                Navigator.push(
+
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            PartiesChannel()
+                    )
+                );
+              },
+            ),
+          ]
+          ),
+  )*/
+  
+  
+)
+    );
+
+
+  }
+}
+
+
+class ChannelCard extends StatelessWidget {
+  // list of colors that we use in our app
+
+
+  const ChannelCard({
+    Key key,
+    this.itemIndex,
+    this.channel,
+    this.press,
+  }) : super(key: key);
+
+  final int itemIndex;
+  final Channel channel;
+  final Function press;
+
+  @override
+  Widget build(BuildContext context) {
+    // It  will provide us total height and width of our screen
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: size.width/3.4,
+        vertical: 3,
+      ),
+      // color: Colors.blueAccent,
+      height: 50,
+      child: InkWell(
+        onTap: press,
+        child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: <Widget>[
+            // Those are our background
+            Container(
+              height: 50,
+
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(22),
+                color: Colors.blue,
+                boxShadow: [kDefaultShadow],
+              ),
+              child: Container(
+                margin: EdgeInsets.only(right: 0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                ),
+              ),
+            ),
+            // our product image
+            Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              child: Hero(
+                tag: '${channel.chanelName}',
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 50),
+                  height: 0,
+                  // image is square but we add extra 20 + 20 padding thats why width is 200
+                  width: 50,
+                ),
+              ),
+            ),
+            // Product title and price
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: SizedBox(
+                height: 50,
+                // our image take 200 width, thats why we set out total width - 200
+                width: size.width - 50,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: kDefaultPadding),
+                      child: Text(
+                        channel.chanelName,
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    ),
+                    // it use the available space
+                    Spacer(),/*
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: kDefaultPadding * 1.5, // 30 padding
+                        vertical: kDefaultPadding / 4, // 5 top and bottom
+                      ),
+                      decoration: BoxDecoration(
+                        color: kSecondaryColor,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(22),
+                          topRight: Radius.circular(22),
+                        ),
+                      ),
+                      child: Text(
+                        "Come",
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    ),*/
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+/*Padding(
           padding: EdgeInsets.only(top: 30 , bottom: 20),
           child: Column(
               children: <Widget>[
@@ -163,45 +621,11 @@ class _HomeState extends State<Home> {
                         //TODO adding floating action button
 
 
-
-
-                          /*
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(top : 150),
-
-                              ),
-                              ListView.builder(itemCount : 0 ,itemBuilder:(context,index) =>ChannelCard(
-                                itemIndex: 0,
-                                channel: arryChannels[0],
-                                press: () {
-                                  print("kakak");
-                                  Navigator.push(
-
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                     PartiesChannel()
-                                    )
-
-                                  );
-                                },
-                              ),
-                              )
-
-
-                            ],
-                          ),*/
-
-
-
-
                       ],
                     ),
 
                   ),
-                ),
+                ),*/
 /*
                 new Expanded(
                   flex: 2,
@@ -238,158 +662,59 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),*/
+
+
+
+/*
                     Container(
+                      child:Column(children: <Widget>[
+                        ChannelCard(
+                            itemIndex: 0,
+                            channel: arryChannels[0],
+                            press: () {
+                              Navigator.push(
 
-
-
-                      child:Column(children: <Widget>[  ChannelCard(
-                        itemIndex: 0,
-                        channel: arryChannels[0],
-                        press: () {
-                          print("kakak");
-                          Navigator.push(
-
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PartiesChannel()
-                              )
-
-                          );
-                        },
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PartiesChannel()
+                                  )
+                                );
+                            },
                       ),
+                        ChannelCard(
+                          itemIndex: 0,
+                          channel: arryChannels[1],
+                          press: () {
+                            Navigator.push(
 
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PartiesChannel()
+                                )
+                            );
+                          },
+                        ),
+                        ChannelCard(
+                          itemIndex: 0,
+                          channel: arryChannels[2],
+                          press: () {
+                            Navigator.push(
 
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PartiesChannel()
+                                )
+                            );
+                          },
+                        ),
                         ]
-                        ,)
-
-
-
-
-
+                      )
                       ),
 
 
               ] ),
         ),
-      ) ,
-    );
-  }
-}
-
-
-
-class ChannelCard extends StatelessWidget {
-  // list of colors that we use in our app
-
-
-  const ChannelCard({
-    Key key,
-    this.itemIndex,
-    this.channel,
-    this.press,
-  }) : super(key: key);
-
-  final int itemIndex;
-  final Channel channel;
-  final Function press;
-
-  @override
-  Widget build(BuildContext context) {
-    // It  will provide us total height and width of our screen
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: size.width/3.8,
-        vertical: 3,
-      ),
-      // color: Colors.blueAccent,
-      height: 50,
-      child: InkWell(
-        onTap: press,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: <Widget>[
-            // Those are our background
-            Container(
-              height: 50,
-
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                color: Colors.blue,
-                boxShadow: [kDefaultShadow],
-              ),
-              child: Container(
-                margin: EdgeInsets.only(right: 0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                ),
-              ),
-            ),
-            // our product image
-            Positioned(
-              left: 0,
-              top: 0,
-              right: 0,
-              child: Hero(
-                tag: '${channel.chanelName}',
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  height: 0,
-                  // image is square but we add extra 20 + 20 padding thats why width is 200
-                  width: 50,
-                ),
-              ),
-            ),
-            // Product title and price
-            Positioned(
-              bottom: 0,
-              left: 0,
-              child: SizedBox(
-                height: 50,
-                // our image take 200 width, thats why we set out total width - 200
-                width: size.width - 200,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: kDefaultPadding),
-                      child: Text(
-                        channel.chanelName,
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    ),
-                    // it use the available space
-                    Spacer(),/*
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: kDefaultPadding * 1.5, // 30 padding
-                        vertical: kDefaultPadding / 4, // 5 top and bottom
-                      ),
-                      decoration: BoxDecoration(
-                        color: kSecondaryColor,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(22),
-                          topRight: Radius.circular(22),
-                        ),
-                      ),
-                      child: Text(
-                        "Come",
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    ),*/
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
+      ) ,*/

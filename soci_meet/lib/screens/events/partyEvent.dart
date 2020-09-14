@@ -19,7 +19,32 @@ import 'package:socimeet/models/event.dart';
 }
 *
 * */
+showAlertDialog(BuildContext context) {
 
+  // set up the buttons
+  Widget okButton = FlatButton(
+    child: Text("Ok"),
+    onPressed:  () {
+      Navigator.pop(context);
+    },
+  );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Error"),
+    content: Text("This event is already full!"),
+    actions: [
+      okButton
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 
 
 class partyWidget extends StatefulWidget {
@@ -34,59 +59,78 @@ class partyWidget extends StatefulWidget {
 class _State extends State<partyWidget> {
   @override
   Event myEvent;
+  bool isJoined = false;
   _State(Event myEvent){
     this.myEvent=myEvent;
   }
   Widget build(BuildContext context) {
     return Scaffold(
-     backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Event'),
         centerTitle: true,
         backgroundColor:Colors.blue[900] ,
       ),
-      body: Card(
-        margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 350),
+      body:Card(
+        margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-        child: Column(
-        children: <Widget>[
-          Row(
-            children: [
-              Text('Creator: ', style: TextStyle(fontSize: 20) ,),
-              Text('${myEvent.creator.first_name} ${myEvent.creator.last_name}', style: TextStyle(fontSize: 20)),
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: [
+                  Text('Creator: ', style: TextStyle(fontSize: 20) ,),
+                  Text('${myEvent.creator.first_name} ${myEvent.creator.last_name}', style: TextStyle(fontSize: 20)),
+                ],
+              ),
+              SizedBox(height: 30,),
+              Row(
+                children: [
+                  Text('Date: ', style: TextStyle(fontSize: 20) ),
+                  Text('${myEvent.date.toString().substring(0,myEvent.date.toString().indexOf(' '))}', style: TextStyle(fontSize: 20) ),
+                ],
+              ),
+              SizedBox(height: 30,),
+              Row(
+                children: [
+                  Text('Time: ', style: TextStyle(fontSize: 20) ),
+                  Text('${myEvent.date.toString().substring(myEvent.date.toString().indexOf(' '),myEvent.date.toString().length-7)}', style: TextStyle(fontSize: 20) ),
+                ],
+              ),
+              SizedBox(height: 30,),
+              Row(
+                children: [
+                  Text('Address: ', style: TextStyle(fontSize: 20) ),
+                  Text('${myEvent.address}', style: TextStyle(fontSize: 20) ),
+                ],
+              ),
+              SizedBox(height: 30,),
+              Row(
+                children: [
+                  Text('Number of participants: ${myEvent.counter}/', style: TextStyle(fontSize: 20) ),
+                  Text('${myEvent.numberOfParticipantes}', style: TextStyle(fontSize: 20) ),
+                ],
+              ),
+              SizedBox(height: 30,)
             ],
           ),
-          SizedBox(height: 30,),
-          Row(
-            children: [
-              Text('Date: ', style: TextStyle(fontSize: 20) ),
-              Text('${myEvent.date.toString()}', style: TextStyle(fontSize: 20) ),
-            ],
-          ),
-          SizedBox(height: 30,),
-          Row(
-            children: [
-              Text('Address: ', style: TextStyle(fontSize: 20) ),
-              Text('${myEvent.address}', style: TextStyle(fontSize: 20) ),
-            ],
-          ),
-          SizedBox(height: 30,),
-          Row(
-            children: [
-              Text('Number of participants: ', style: TextStyle(fontSize: 20) ),
-              Text('${myEvent.numberOfParticipantes}', style: TextStyle(fontSize: 20) ),
-            ],
-          ),
-          SizedBox(height: 30,),
-          FloatingActionButton(
-            onPressed: (){},
-            child: Text('join'),
-          )
-        ],
+        ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          if(!isJoined){
+            if(myEvent.counter<myEvent.numberOfParticipantes){
+              setState(() {
+                myEvent.counter++;
+              });
+              isJoined=true;
+            }
+            else{
+              showAlertDialog(context);
+            }
+          }
+        },
+        child: Text('join'),
       ),
-      )
     );
   }
 }

@@ -4,38 +4,12 @@ import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/models/party.dart';
 import 'package:socimeet/models/user.dart';
+import 'addEventForm.dart';
 
 import '../events/partyEvent.dart';
 
 
 
-/*
-* class Channel {
-  Map<String,User> users; //unique UserId ==> will help us get boolean when added\ removed\ already in\ not signed
-  List<Event> events;
-  String chanelName;
-}
-*
-* */
-
-// class PartysChannel extends StatefulWidget {
-//   Channel this_channel;
-//   @override
-//   _ChannelState createState() => _ChannelState();
-// }
-//
-// class _ChannelState extends State<PartysChannel> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("Partys Channel"),),
-//
-//
-//       body:ListView.builder(itemBuilder: null) ,
-//
-//     );
-//   }
-// }
 User moshe= User(emailAddress: 'moshe@peretz.com',first_name: 'moshe',last_name: 'peretz',gender: 'male',uid: '42');
 
 class PartiesChannel extends StatefulWidget {
@@ -48,50 +22,12 @@ class _PartiesChannelState extends State<PartiesChannel> {
   //uid should be unique and be received from the server
 
   List<Event> plist = [
-    Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipantes: 50,address: "Rager 155, be'er-Sheva",creator: moshe ),
+    Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipantes: 1,address: "Rager 155, be'er-Sheva",creator: moshe ),
     Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipantes: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
+    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 15,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
   ];
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
 
 
-
-
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.grey[200],
-//       appBar: AppBar(
-//         backgroundColor: Colors.blue[900],
-//         title: Text('Parties Channel'),
-//         centerTitle: true,
-//         elevation: 0,
-//       ),
-//       body: ListView.builder(
-//           itemCount: plist.length,
-//           itemBuilder: (context, index) {
-//             return Padding(
-//               padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
-//               child: Card(
-//                 child: ListTile(
-//                   onTap: () {},
-//                   title: Text(plist[index].location),
-//                   leading: CircleAvatar(
-//                     backgroundImage: AssetImage('assets/${plist[index].flag}'),
-//                   ),
-//                 ),
-//               ),
-//             );
-//           }
-//       ),
-//     );
-//   }
-// }
 
 
   Widget cardTemplate(Event eve) {
@@ -102,14 +38,35 @@ class _PartiesChannelState extends State<PartiesChannel> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(
-                eve.address,
-                style: TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.grey[600],
-                ),
+              Row(
+
+                children: [
+                  Text(
+                    eve.address,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  FlatButton.icon(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  partyWidget(eve)
+                          )
+
+                      );
+                    },
+                    icon: Icon(Icons.info),
+                    label: Text(''),
+
+                  )
+
+                ],
               ),
-              SizedBox(height: 6.0),
+
+              // SizedBox(height: 2.0),
               Text(
                 '${eve.creator.first_name} ${eve.creator.last_name}',
                 style: TextStyle(
@@ -118,6 +75,14 @@ class _PartiesChannelState extends State<PartiesChannel> {
                 ),
               ),
               SizedBox(height: 6.0),
+              Row(
+                children: [
+                  Text('${eve.date.toString().substring(0,eve.date.toString().indexOf(' '))}'),
+                  SizedBox(width:  50.0),
+                  Text('${eve.date.toString().substring(eve.date.toString().indexOf(' ')+1,(eve.date.toString().length-7) )}'),
+                ],
+              ),
+
               Text(
                 '${eve.counter} / ${eve.numberOfParticipantes}',
                 style: TextStyle(
@@ -126,20 +91,7 @@ class _PartiesChannelState extends State<PartiesChannel> {
                       :  Colors.greenAccent,
                 ),
               ),
-              FlatButton.icon(
-                onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    partyWidget(eve)
-                            )
 
-                        );
-                },
-                icon: Icon(Icons.info),
-                label: Text(''),
-
-              )
 
             ],
           ),
@@ -150,7 +102,7 @@ class _PartiesChannelState extends State<PartiesChannel> {
 
 
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -160,29 +112,50 @@ class _PartiesChannelState extends State<PartiesChannel> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: ListView.builder(
-          itemCount: plist.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
-              child: Column(
-                // children:
-                // [
-                //   Card(
-                //     child: ListTile(
-                //       onTap: () {},
-                //       title: Text(plist[index].location),
-                //       leading: CircleAvatar(
-                //         backgroundImage: AssetImage('assets/${plist[index].flag}'),
-                //       ),
-                //     ),
-                //   ),
-                // ],
-                children: plist.map((eve) => cardTemplate(eve)).toList(),
 
-              ),
-            );
-          }
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          var alertDialog = AlertDialog(
+            title: Text("Add Event"),
+            content: EventForm(moshe,plist),
+          );
+          showDialog(context: context, builder: (_) => alertDialog);
+//         Navigator.push(context,
+//              MaterialPageRoute(builder: (context) => StreamProvider<User>.value(
+//                  value: AuthService().user,
+//                  child: GuestForm()
+//              )
+//              )
+//          );
+        },
+        child: Icon(Icons.add),
+      ),
+      body: Container(
+
+        child: ListView.builder(
+            itemCount: plist.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
+                child: Column(
+                  // children:
+                  // [
+                  //   Card(
+                  //     child: ListTile(
+                  //       onTap: () {},
+                  //       title: Text(plist[index].location),
+                  //       leading: CircleAvatar(
+                  //         backgroundImage: AssetImage('assets/${plist[index].flag}'),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ],
+                  children: plist.map((eve) => cardTemplate(eve)).toList(),
+
+                ),
+              );
+            }
+        ),
       ),
     );
   }
