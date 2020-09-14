@@ -48,50 +48,12 @@ class _PartiesChannelState extends State<PartiesChannel> {
   //uid should be unique and be received from the server
 
   List<Event> plist = [
-    Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipantes: 50,address: "Rager 155, be'er-Sheva",creator: moshe ),
+    Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipantes: 1,address: "Rager 155, be'er-Sheva",creator: moshe ),
     Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipantes: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
+    // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 15,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
   ];
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
 
 
-
-
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.grey[200],
-//       appBar: AppBar(
-//         backgroundColor: Colors.blue[900],
-//         title: Text('Parties Channel'),
-//         centerTitle: true,
-//         elevation: 0,
-//       ),
-//       body: ListView.builder(
-//           itemCount: plist.length,
-//           itemBuilder: (context, index) {
-//             return Padding(
-//               padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
-//               child: Card(
-//                 child: ListTile(
-//                   onTap: () {},
-//                   title: Text(plist[index].location),
-//                   leading: CircleAvatar(
-//                     backgroundImage: AssetImage('assets/${plist[index].flag}'),
-//                   ),
-//                 ),
-//               ),
-//             );
-//           }
-//       ),
-//     );
-//   }
-// }
 
 
   Widget cardTemplate(Event eve) {
@@ -118,6 +80,9 @@ class _PartiesChannelState extends State<PartiesChannel> {
                 ),
               ),
               SizedBox(height: 6.0),
+              Text('${eve.date.toString().substring(0,eve.date.toString().indexOf(' '))}'),
+              SizedBox(height: 6.0),
+              Text('${eve.date.toString().substring(eve.date.toString().indexOf(' '),(eve.date.toString().length-7) )}'),
               Text(
                 '${eve.counter} / ${eve.numberOfParticipantes}',
                 style: TextStyle(
