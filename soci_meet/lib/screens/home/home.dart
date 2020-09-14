@@ -3,17 +3,16 @@ import 'package:socimeet/models/user.dart';
 import 'package:socimeet/services/auth.dart';
 import 'package:socimeet/screens/home/HomeManagment.dart';
 import 'package:flutter/material.dart';
-
-
+import 'package:socimeet/screens/events/partyEvent.dart';
+import 'package:socimeet/models/event.dart';
 
 
 
 class Home extends StatefulWidget {// he made is stateless but im want it in differ because its will be my menu
 
-  final User login_user;
+  User login_user;
 
-
-  const Home(this.login_user);
+   Home(this.login_user);
 
   @override
   _HomeState createState() => _HomeState();
@@ -163,7 +162,7 @@ class _HomeState extends State<Home> {
                         //TODO adding floating action button
 
                         FloatingActionButton(
-                          onPressed: () {Navigator.pushNamed(context, '/party');},
+                          onPressed: () {Navigator.pushNamed(context,  '/party');},
                           child: Text('Party'),
                         ),
 

@@ -3,6 +3,7 @@
 import 'package:socimeet/models/user.dart';
 
 class Event {
+  String uId;
   DateTime date;
   int numberOfParticipantes;
   User creator;
@@ -10,6 +11,6 @@ class Event {
   String address;
 
 
-  Event({this.date, this.numberOfParticipantes, this.address, this.creator});
+  Event({this.date, this.numberOfParticipantes, this.address, this.creator,this.counter=1});
 }
 
