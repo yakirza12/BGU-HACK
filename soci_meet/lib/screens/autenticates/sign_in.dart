@@ -188,7 +188,7 @@ class _SignInState extends State<SignIn2> {
                                                     {
                                                   print(email);
                                                   print(password);
-                                                  dynamic result = await _auth.sighinWithEmailAndPassword(email, password);
+                                                  dynamic result = await _auth.signInWithEmailAndPassword(email, password);
 
                                                   if(result == null) {
                                                     setState(() =>

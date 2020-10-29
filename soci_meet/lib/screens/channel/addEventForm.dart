@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/user.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:socimeet/services/auth.dart';
 import 'channel.dart';
 import 'package:socimeet/models/event.dart';
+import 'package:socimeet/services/eventsDatabase.dart';
 
 class EventForm extends StatefulWidget {
   final User user;
@@ -17,7 +20,7 @@ class EventForm extends StatefulWidget {
 }
 
 class _EventFormState extends State<EventForm> {
-
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   DateTime date=DateTime(2020, 9, 14, 17, 30);
@@ -102,12 +105,12 @@ class _EventFormState extends State<EventForm> {
                     form.save();
                     if (form.validate()) //will check if our from is legit
                         {
-                      Navigator.pop(context);
-                        setState(() => widget.plist.add(Event(creator:widget.user,address: address,date: date,numberOfParticipantes: numberOfParticipantes )));
+                          String index=UniqueKey().toString();
+                          Navigator.pop(context);
+                          _auth.createEvent(date, numberOfParticipantes , widget.user , address,index);//TODO add event to user events list
+                          setState(() => widget.plist.add(Event(creator:widget.user,address: address,date: date,numberOfParticipants: numberOfParticipantes,eventId: index )));
                       }
                     }
-
-
                 ),
                 SizedBox(height: 12.0),
               ],

@@ -10,9 +10,18 @@ import '../events/partyEvent.dart';
 
 
 
-User moshe= User(emailAddress: 'moshe@peretz.com',first_name: 'moshe',last_name: 'peretz',gender: 'male',uid: '42');
+// User moshe= User(emailAddress: 'moshe@peretz.com',first_name: 'moshe',last_name: 'peretz',gender: 'male',uid: '42');
 
 class PartiesChannel extends StatefulWidget {
+  User login_user;
+
+  PartiesChannel(this.login_user);
+
+  // ignore: non_constant_identifier_names
+  // final User login_user;
+
+  // PartiesChannel(this.login_user);
+
   @override
   _PartiesChannelState createState() => _PartiesChannelState();
 }
@@ -22,9 +31,9 @@ class _PartiesChannelState extends State<PartiesChannel> {
   //uid should be unique and be received from the server
 
   List<Event> plist = [
-    Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipantes: 1,address: "Rager 155, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipantes: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 15,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
+  //   Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipants: 1,address: "Rager 155, be'er-Sheva",creator: moshe ),
+  //   Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipants: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
+  //   Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 15,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
   ];
 
 
@@ -84,10 +93,10 @@ class _PartiesChannelState extends State<PartiesChannel> {
               ),
 
               Text(
-                '${eve.counter} / ${eve.numberOfParticipantes}',
+                '${eve.counter} / ${eve.numberOfParticipants}',
                 style: TextStyle(
                   fontSize: 14.0,
-                  color: (eve.counter == eve.numberOfParticipantes) ? Colors.red[900]
+                  color: (eve.counter == eve.numberOfParticipants) ? Colors.red[900]
                       :  Colors.greenAccent,
                 ),
               ),
@@ -117,7 +126,7 @@ class _PartiesChannelState extends State<PartiesChannel> {
         onPressed: (){
           var alertDialog = AlertDialog(
             title: Text("Add Event"),
-            content: EventForm(moshe,plist),
+            content: EventForm(widget.login_user,plist),
           );
           showDialog(context: context, builder: (_) => alertDialog);
 //         Navigator.push(context,
