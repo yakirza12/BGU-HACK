@@ -1,15 +1,18 @@
 import 'dart:collection';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/services/userDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:socimeet/services/eventsDatabase.dart';
+import 'package:socimeet/services/channelsDB.dart';
 
 
 
 
 class AuthService {
 
+  User _currentUser;
+  User get currentUser => _currentUser;
 
   final FirebaseAuth _auth = FirebaseAuth
       .instance; //singeltone of the firebase aut h object. to get all data from firebase
@@ -106,11 +109,11 @@ class AuthService {
   }
 
   // Creating an event
-  Future createEvent(DateTime dateTime, int numberOfParticipants, User creator,
-      String address,String index) async {
+  Future createChannel(DateTime dateTime, String numberOfParticipants, User creator,
+      String address,String channel ,String index) async {
     try {
-      return await EventsDatabaseServices().createEvent(
-          dateTime, numberOfParticipants, creator, address,index);
+      return await ChannelsDatabaseServices().createEvent(
+          dateTime, numberOfParticipants, creator, address,channel,index);
     }
     catch (e) {
       print(e);

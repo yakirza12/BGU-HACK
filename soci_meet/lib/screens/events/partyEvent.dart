@@ -79,7 +79,7 @@ class _State extends State<partyWidget> {
               Row(
                 children: [
                   Text('Creator: ', style: TextStyle(fontSize: 20) ,),
-                  Text('${myEvent.creator.first_name} ${myEvent.creator.last_name}', style: TextStyle(fontSize: 20)),
+                  Text('ADD NAME', style: TextStyle(fontSize: 20)), // TODO ADD uSER NAME
                 ],
               ),
               SizedBox(height: 30,),
@@ -118,7 +118,7 @@ class _State extends State<partyWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           if(!isJoined){
-            if(myEvent.counter<myEvent.numberOfParticipants){
+            if(myEvent.counter < (myEvent.numberOfParticipants as int)){
               setState(() {
                 myEvent.counter++;
               });

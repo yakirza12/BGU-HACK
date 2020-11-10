@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/user.dart';
@@ -6,12 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:socimeet/services/auth.dart';
 import 'channel.dart';
 import 'package:socimeet/models/event.dart';
-import 'package:socimeet/services/eventsDatabase.dart';
+import 'package:socimeet/services/channelsDB.dart';
 
 class EventForm extends StatefulWidget {
   final User user;
   List<Event> plist;
-  EventForm(this.user,this.plist);
+  final String channel;
+  EventForm(this.channel,this.user,this.plist);
 
   // User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender}); //the constructor for user
 
@@ -23,8 +25,8 @@ class _EventFormState extends State<EventForm> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
-  DateTime date=DateTime(2020, 9, 14, 17, 30);
-  int numberOfParticipantes;
+  DateTime date;
+  String numberOfParticipantes;
   User creator;
   int counter=1; //how many registered
   String address;
@@ -75,7 +77,7 @@ class _EventFormState extends State<EventForm> {
                 ),
                 new Padding(padding: EdgeInsets.all(8.0)),
                 TextFormField(
-                  validator: (val) => (val.runtimeType==int) ? "enter valid number of participants" : null,
+                  validator: (val) => numberValidator(val),
                   decoration: InputDecoration(
                       fillColor: Colors.white,
                       border: new OutlineInputBorder(
@@ -88,7 +90,7 @@ class _EventFormState extends State<EventForm> {
                   ),
                   onChanged: (val) {
                     setState(() {
-                      numberOfParticipantes = val as int;
+                      numberOfParticipantes = val;
                     });
                   },
                 ),
@@ -105,10 +107,10 @@ class _EventFormState extends State<EventForm> {
                     form.save();
                     if (form.validate()) //will check if our from is legit
                         {
-                          String index=UniqueKey().toString();
+                          String event_key = UniqueKey().toString();
                           Navigator.pop(context);
-                          _auth.createEvent(date, numberOfParticipantes , widget.user , address,index);//TODO add event to user events list
-                          setState(() => widget.plist.add(Event(creator:widget.user,address: address,date: date,numberOfParticipants: numberOfParticipantes,eventId: index )));
+                          _auth.createChannel(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO add event to user events list
+                          setState(() => widget.plist.add(Event(creator:widget.user.uid,address: address,date: date,numberOfParticipants: numberOfParticipantes , eventId : event_key )));
                       }
                     }
                 ),
