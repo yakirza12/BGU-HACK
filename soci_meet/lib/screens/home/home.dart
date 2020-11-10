@@ -16,28 +16,18 @@ import '../channel/channel.dart';
 
 class Home extends StatefulWidget {// he made is stateless but im want it in differ because its will be my menu
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  // ignore: non_constant_identifier_names
   final User login_user;
  // User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender})
  // Event({this.date, this.numberOfParticipantes, this.address, this.creator});
 
   const Home(this.login_user);
+  User getUser(){
+    return login_user;
+  }
 
   @override
   _HomeState createState() => _HomeState();
-
 }
 
 
@@ -51,26 +41,20 @@ class _HomeState extends State<Home> {
 
   static User moshe= User(emailAddress: 'moshe@peretz.com',first_name: 'moshe',last_name: 'peretz',gender: 'male',uid: '42');
 
-
   static List<Event> plist = [
-    Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipantes: 50,address: "Rager 155, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipantes: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
-    Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
+    // Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipants: 50,address: "Rager 155, be'er-Sheva",creator: moshe ),
+    // Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipants: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
+    // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
+    // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
+    // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
   ];
 
+  static Map<String,User> ulist={};
 
-  static Channel parties = Channel(chanelName: "Parties" ,users: {"1" : moshe},events: plist );
-  static Channel shabatDinner = Channel(chanelName: "Shabat Dinner" ,users: {"1" : moshe},events: plist );
-  static Channel sport = Channel(chanelName: "Sport Games" ,users: {"1" : moshe},events: plist );
-  static List<Channel> arryChannels = [parties,shabatDinner,sport];
-
-
-
-
-
-
+  static Channel parties = Channel(chanelName: "Parties" ,users: ulist,events: plist );
+  static Channel shabatDinner = Channel(chanelName: "Shabat Dinner" ,users: ulist,events: plist );
+  static Channel sport = Channel(chanelName: "Sport Games" ,users: ulist,events: plist );
+  static List<Channel> arrayChannels = [parties,shabatDinner,sport];
 
 
   Widget cardTemplate(Event eve) {
@@ -100,16 +84,15 @@ class _HomeState extends State<Home> {
               ),
               SizedBox(height: 6.0),
               Text(
-                '${eve.counter} / ${eve.numberOfParticipantes}',
+                '${eve.counter} / ${eve.numberOfParticipants}',
                 style: TextStyle(
                   fontSize: 14.0,
-                  color: (eve.counter == eve.numberOfParticipantes) ? Colors.red[900]
+                  color: (eve.counter == eve.numberOfParticipants) ? Colors.red[900]
                       :  Colors.greenAccent,
                 ),
               ),
               FlatButton.icon(
                 onPressed: () {
-
                   Navigator.push(context,
                       MaterialPageRoute(
                           builder: (context) =>
@@ -146,7 +129,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final double channelHight = size.height*0.30;
+    final double channelHeight = size.height*0.30;
 
 
 
@@ -218,8 +201,8 @@ class _HomeState extends State<Home> {
                     duration: const Duration(milliseconds: 200),
                     width: size.width,
                     alignment: Alignment.topCenter,
-                    height: channelHight,
-                  child: CategoriesScroller(),
+                    height: channelHeight,
+                  child: CategoriesScroller(widget.login_user),
                     ),
               ),
               Expanded(
@@ -260,22 +243,8 @@ class _HomeState extends State<Home> {
 }
 
 class CategoriesScroller extends StatelessWidget {
-  const CategoriesScroller();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  final User login_user;
+  const CategoriesScroller( this.login_user);
 
 
   @override
@@ -296,7 +265,7 @@ class CategoriesScroller extends StatelessWidget {
                       Navigator.push(context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                PartiesChannel()
+                                PartiesChannel(login_user)
                         )
                     )
                     },
@@ -331,7 +300,7 @@ class CategoriesScroller extends StatelessWidget {
                       Navigator.push(context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  PartiesChannel()
+                                  PartiesChannel(login_user)
                           )
                       )
                     },

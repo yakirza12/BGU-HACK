@@ -45,7 +45,7 @@ class Wrapper extends StatelessWidget {
           last_name : last_name , gender : gender);
 */
 
-      return Home(user); // get the full user data from the firstore DB.
+      return Home(user); // get the full user data from the firestore DB.
     }
 
   }
