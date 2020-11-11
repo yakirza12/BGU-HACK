@@ -32,11 +32,7 @@ class ChannelWidget extends StatefulWidget {
 class _ChannelState extends State<ChannelWidget> {
   //uid should be unique and be received from the server
 
-  List<Event> _events = [
-    //   Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipants: 1,address: "Rager 155, be'er-Sheva",creator: moshe ),
-    //   Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipants: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
-    //   Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 15,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
-  ];
+  List<Event> _events = [];
 
 
   Widget cardTemplate(Event eve) {
@@ -77,7 +73,7 @@ class _ChannelState extends State<ChannelWidget> {
 
               // SizedBox(height: 2.0),
               Text(
-                ' ', //Todo UID תוסיף לי כאן תשם אחשלי היקר
+                ' ', //Todo UID
                 style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.grey[800],
@@ -119,6 +115,14 @@ class _ChannelState extends State<ChannelWidget> {
       final event = Event.fromSnapshot(data);
       return event;
     }).toList();
+    for (int i = 0; i < _events.length; i++) { /* Removes events one day after they are over from the DB */
+      if (_events[i].date.day.compareTo(DateTime.now().day+1) < 0 && _events[i].date.month.compareTo(DateTime.now().month)==0 && _events[i].date.year.compareTo(DateTime.now().year)==0 ) {
+        Firestore.instance.collection('Channels').document(widget.ChannelName)
+            .collection('Events').document(_events[i].eventId)
+            .delete();
+        _events.remove(i);
+      }
+    }
   }
 
 
@@ -134,14 +138,14 @@ class _ChannelState extends State<ChannelWidget> {
           if (!snapshot.hasData)
             return LinearProgressIndicator();
           else {
-            _buildEventsList(context, snapshot.data.documents);
+            _buildEventsList(context, snapshot.data.documents);//TODO HERE THE LIST IS CREATED
             return SafeArea(
               bottom: false,
               child: Scaffold(
                 backgroundColor: Colors.grey[200],
                 appBar: AppBar(
                   backgroundColor: Colors.blue[900],
-                  title: Text('Parties Channel'),
+                  title: Text(widget.ChannelName),
                   centerTitle: true,
                   elevation: 0,
                 ),
@@ -167,27 +171,13 @@ class _ChannelState extends State<ChannelWidget> {
                 body: Container(
 
                   child: ListView.builder(
-                      itemCount: _events.length,
+                      itemCount: 1,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 1.0, horizontal: 4.0),
                           child: Column(
-                            // children:
-                            // [
-                            //   Card(
-                            //     child: ListTile(
-                            //       onTap: () {},
-                            //       title: Text(plist[index].location),
-                            //       leading: CircleAvatar(
-                            //         backgroundImage: AssetImage('assets/${plist[index].flag}'),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ],
-                            children: _events.map((eve) => cardTemplate(eve))
-                                .toList(),
-
+                            children:_events.map((eve) => cardTemplate(eve)).toList(),
                           ),
                         );
                       }

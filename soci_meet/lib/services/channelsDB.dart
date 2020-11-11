@@ -4,10 +4,10 @@ import 'package:socimeet/models/event.dart';
 import 'package:socimeet/models/user.dart';
 
 class ChannelsDatabaseServices {
-  final String eid;
+  final String cid;
 
 
-  ChannelsDatabaseServices({ this.eid });
+  ChannelsDatabaseServices({ this.cid });
 
   final CollectionReference channelCollection = Firestore.instance.collection(
       'Channels');
@@ -25,6 +25,7 @@ class ChannelsDatabaseServices {
       'numberOfParticipants': numberOfParticipants,
       'counter' : 1,
       'userList': [creator.uid,],
+      'eventId' : index,
     });
   }
 }
