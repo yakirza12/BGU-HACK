@@ -8,12 +8,15 @@ import 'package:socimeet/services/auth.dart';
 import 'channel.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/services/channelsDB.dart';
+import 'package:intl/intl.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+
 
 class EventForm extends StatefulWidget {
   final User user;
-  List<Event> plist;
+  List<Event> _events;
   final String channel;
-  EventForm(this.channel,this.user,this.plist);
+  EventForm(this.channel,this.user,this._events);
 
   // User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender}); //the constructor for user
 
@@ -76,6 +79,39 @@ class _EventFormState extends State<EventForm> {
                   },
                 ),
                 new Padding(padding: EdgeInsets.all(8.0)),
+                DateTimeField(
+                  format: DateFormat("yyyy-MM-dd 'At' HH:mm"),
+                  onShowPicker: (context, currentValue) async {
+                     date = await showDatePicker(
+                        context: context,
+                        firstDate: DateTime.now(),
+                        initialDate: currentValue ?? DateTime.now(),
+                        lastDate: DateTime(2100));
+                    if (date != null) {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime:
+                        TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                      );
+                      return DateTimeField.combine(date, time);
+                    } else {
+                      return currentValue;
+                    }
+                  },
+                    decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        border: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(20.0),
+                          borderSide: new BorderSide(),
+                        ),
+                        labelText: "Date"),
+                    onChanged:(dt) {
+                      setState(() {
+                        date = dt;
+                      });
+                    }),
+
+                new Padding(padding: EdgeInsets.all(8.0)),
                 TextFormField(
                   validator: (val) => numberValidator(val),
                   decoration: InputDecoration(
@@ -109,8 +145,7 @@ class _EventFormState extends State<EventForm> {
                         {
                           String event_key = UniqueKey().toString();
                           Navigator.pop(context);
-                          _auth.createChannel(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO add event to user events list
-                          setState(() => widget.plist.add(Event(creator:widget.user.uid,address: address,date: date,numberOfParticipants: numberOfParticipantes , eventId : event_key )));
+                         _auth.createChannel(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO add event to user events list
                       }
                     }
                 ),
