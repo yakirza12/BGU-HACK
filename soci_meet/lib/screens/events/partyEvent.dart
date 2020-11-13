@@ -3,22 +3,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/event.dart';
+import 'package:socimeet/models/user.dart';
 
-
-/*
-*
-* class Event {
-* String uId;
-  DateTime date;
-  int numberOfParticipantes;
-  int counter;
-  User creator;
-  String address;
-
-  Event({this.date, this.numberOfParticipantes, this.address, this.creator});
-}
-*
-* */
 showAlertDialog(BuildContext context) {
 
   // set up the buttons
@@ -49,8 +35,10 @@ showAlertDialog(BuildContext context) {
 
 class partyWidget extends StatefulWidget {
   Event myEvent;
-  partyWidget(Event myEvent){
+  User login_user;
+  partyWidget(Event myEvent,User login_user){
     this.myEvent=myEvent;
+    this.login_user = login_user;
   }
   @override
   _State createState() => _State(myEvent);
@@ -79,7 +67,7 @@ class _State extends State<partyWidget> {
               Row(
                 children: [
                   Text('Creator: ', style: TextStyle(fontSize: 20) ,),
-                  Text('ADD NAME', style: TextStyle(fontSize: 20)), // TODO ADD uSER NAME
+                  Text(widget.login_user.first_name+" "+ widget.login_user.last_name, style: TextStyle(fontSize: 20)),
                 ],
               ),
               SizedBox(height: 30,),

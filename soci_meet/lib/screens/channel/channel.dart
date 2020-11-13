@@ -58,7 +58,7 @@ class _ChannelState extends State<ChannelWidget> {
                       Navigator.push(context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  partyWidget(eve)
+                                  partyWidget(eve,widget.login_user)
                           )
 
                       );
@@ -73,7 +73,7 @@ class _ChannelState extends State<ChannelWidget> {
 
               // SizedBox(height: 2.0),
               Text(
-                ' ', //Todo UID
+                widget.login_user.first_name+" "+ widget.login_user.last_name,
                 style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.grey[800],
