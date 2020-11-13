@@ -15,6 +15,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 class EventForm extends StatefulWidget {
   final User user;
   List<Event> _events;
+  bool isValid = false;
   final String channel;
   EventForm(this.channel,this.user,this._events);
 
@@ -73,6 +74,7 @@ class _EventFormState extends State<EventForm> {
                     fontFamily: "Poppins",
                   ),
                   onChanged: (val) {
+                    _formKey.currentState.save();
                     setState(() {
                       address = val;
                     });
@@ -106,6 +108,7 @@ class _EventFormState extends State<EventForm> {
                         ),
                         labelText: "Date"),
                     onChanged:(dt) {
+                      _formKey.currentState.save();
                       setState(() {
                         date = dt;
                       });
@@ -125,6 +128,9 @@ class _EventFormState extends State<EventForm> {
                     fontFamily: "Poppins",
                   ),
                   onChanged: (val) {
+                    final form = _formKey.currentState;
+                    if(form.validate())
+                      widget.isValid = true;// TODO this only works correctly when user fill fields from top to bottom, need to find a better way to do it
                     setState(() {
                       numberOfParticipantes = val;
                     });
@@ -133,7 +139,7 @@ class _EventFormState extends State<EventForm> {
                 new Padding(padding: EdgeInsets.all(8.0)),
 
                 RaisedButton(
-                  color: Colors.pink[52],
+                  color:widget.isValid ? Colors.blue: Colors.pink[52],
                   child: Text(
                     'Add event',
                     style: TextStyle(color: Colors.white),
@@ -143,9 +149,10 @@ class _EventFormState extends State<EventForm> {
                     form.save();
                     if (form.validate()) //will check if our from is legit
                         {
+                          widget.isValid = true;//TODO how to set the state of the color without using the onPress method? when to form is Valid I want the color to chane
                           String event_key = UniqueKey().toString();
                           Navigator.pop(context);
-                         _auth.createChannel(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO add event to user events list
+                          dynamic result = _auth.createEvent(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO Use Event Ref From FireBase Event so you can add him to user EventsList
                       }
                     }
                 ),

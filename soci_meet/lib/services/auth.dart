@@ -38,7 +38,7 @@ class AuthService {
 //register with email and password
   Future registerWithEmailAndPassword(String email, String Password,
       String first_name, String last_name, String gender,
-      List<String> events) async {
+      Map <String,String> userEventsIdList) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: Password);
@@ -46,7 +46,7 @@ class AuthService {
       // create Document for user database.
       await UserDatabaseService(uid: user.uid,email:email,first_name:first_name,last_name:last_name,gender:gender).updateUserData(
           email, first_name, last_name, gender,
-          events); // sign the user document to get his data.
+          userEventsIdList); // sign the user document to get his data.
       User appUser = _userFromFirebaseUser(user, first_name, last_name, gender);
       print("THIS IS APPUSER: "+ appUser.toString());
       //  _userList.putIfAbsent(user.uid,() => appUser);
@@ -109,7 +109,7 @@ class AuthService {
   }
 
   // Creating an event
-  Future createChannel(DateTime dateTime, String numberOfParticipants, User creator,
+  Future createEvent(DateTime dateTime, String numberOfParticipants, User creator,
       String address,String channel ,String index) async {
     try {
       return await ChannelsDatabaseServices().createEvent(

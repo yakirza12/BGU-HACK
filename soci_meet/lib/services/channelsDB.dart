@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/models/user.dart';
+import 'package:socimeet/services/userDatabase.dart';
 
 class ChannelsDatabaseServices {
   final String cid;
@@ -13,10 +14,7 @@ class ChannelsDatabaseServices {
       'Channels');
 
 // Creating an event
-  Future createEvent(DateTime dateTime, String numberOfParticipants, User creator,
-      String address,String channel, String index) async {
-   //final index = UniqueKey().toString();
-   print("THIS IS THE CREATOR: "+ creator.first_name);
+  Future createEvent(DateTime dateTime, String numberOfParticipants, User creator,String address,String channel, String index) async {
     final eventsCollection = channelCollection.document(channel).collection('Events');
     return await eventsCollection.document(index).setData({
       'address': address,
