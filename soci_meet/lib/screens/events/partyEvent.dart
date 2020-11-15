@@ -67,7 +67,7 @@ class _State extends State<partyWidget> {
               Row(
                 children: [
                   Text('Creator: ', style: TextStyle(fontSize: 20) ,),
-                  Text(widget.login_user.first_name+" "+ widget.login_user.last_name, style: TextStyle(fontSize: 20)),
+                  Text(myEvent.creator, style: TextStyle(fontSize: 20)),
                 ],
               ),
               SizedBox(height: 30,),

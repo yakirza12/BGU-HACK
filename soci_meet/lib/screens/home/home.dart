@@ -181,7 +181,7 @@ class _HomeState extends State<Home> {
                         width: size.width,
                         alignment: Alignment.topCenter,
                         height: channelHeight,
-                        child: CategoriesScroller(_user),
+                        child: CategoriesScroller(_user,arrayChannels),
                       ),
                     ),
                     Expanded(
@@ -224,8 +224,9 @@ class _HomeState extends State<Home> {
 
 class CategoriesScroller extends StatelessWidget {
   final User login_user;
+  final List<Channel> arrayChannels;
 
-  const CategoriesScroller(this.login_user);
+  const CategoriesScroller(this.login_user,this.arrayChannels);
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +248,7 @@ class CategoriesScroller extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChannelWidget("Parties", login_user)))
+                                ChannelWidget(login_user, arrayChannels[0])))
                   },
                   child: Container(
                     width: 150,
@@ -272,7 +273,7 @@ class CategoriesScroller extends StatelessWidget {
                             height: 10,
                           ),
                           Text(
-                            "17 Available Events",
+                            arrayChannels[0].events.length.toString()+ " Available Events",
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],
@@ -286,7 +287,7 @@ class CategoriesScroller extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChannelWidget("Shabat Dinner", login_user)))
+                                ChannelWidget( login_user,arrayChannels[1])))
                   },
                   child: Container(
                     width: 150,
@@ -312,7 +313,7 @@ class CategoriesScroller extends StatelessWidget {
                               height: 10,
                             ),
                             Text(
-                              "3 Available Events",
+                              arrayChannels[1].events.length.toString()+ " Available Events",
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
@@ -328,7 +329,7 @@ class CategoriesScroller extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChannelWidget("SportGames", login_user)))
+                                ChannelWidget(login_user,arrayChannels[2])))
                   },
                   child: Container(
                     width: 150,
@@ -353,7 +354,7 @@ class CategoriesScroller extends StatelessWidget {
                             height: 10,
                           ),
                           Text(
-                            "12 Available Events",
+                            arrayChannels[2].events.length.toString()+ " Available Events",
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],

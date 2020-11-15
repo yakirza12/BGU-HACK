@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/user.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class EventForm extends StatefulWidget {
   final User user;
   List<Event> _events;
   bool isValid = false;
-  final String channel;
+ final Channel channel;
   EventForm(this.channel,this.user,this._events);
 
   // User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender}); //the constructor for user
@@ -153,6 +154,7 @@ class _EventFormState extends State<EventForm> {
                           String event_key = UniqueKey().toString();
                           Navigator.pop(context);
                           dynamic result = _auth.createEvent(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO Use Event Ref From FireBase Event so you can add him to user EventsList
+                          widget.channel.eventCount++;
                       }
                     }
                 ),

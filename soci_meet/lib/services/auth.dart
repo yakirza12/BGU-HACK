@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/services/userDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -110,9 +111,9 @@ class AuthService {
 
   // Creating an event
   Future createEvent(DateTime dateTime, String numberOfParticipants, User creator,
-      String address,String channel ,String index) async {
+      String address,Channel channel ,String index) async {
     try {
-      return await ChannelsDatabaseServices().createEvent(
+      return await ChannelsDatabaseServices().createChannel(
           dateTime, numberOfParticipants, creator, address,channel,index);
     }
     catch (e) {
