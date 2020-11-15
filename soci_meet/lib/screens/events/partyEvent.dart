@@ -1,6 +1,7 @@
 
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/models/user.dart';
@@ -58,6 +59,7 @@ class _State extends State<partyWidget> {
         title: Text('Event'),
         centerTitle: true,
         backgroundColor:Colors.blue[900] ,
+        actions: [creatorDelete(widget.login_user.uid, myEvent)],
       ),
       body:Card(
         margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
@@ -130,5 +132,19 @@ class _State extends State<partyWidget> {
         child: Text('join'),
       ),
     );
+  }
+  Widget creatorDelete(String userUid,Event event){
+    if(userUid == event.creator_id ) {
+     return FlatButton.icon(
+          icon: Icon(Icons.delete),
+          onPressed: () async {
+            Firestore.instance.collection('Channels').document(event.channelName)
+                .collection('Events').document(event.eventId)
+                .delete();
+            Navigator.pop(context);
+          },
+         label: Text(""));
+    }
+      return FlatButton.icon(icon: Icon(Icons.delete),label: Text(""),);
   }
 }
