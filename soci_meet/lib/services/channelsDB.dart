@@ -15,16 +15,18 @@ class ChannelsDatabaseServices {
       'Channels');
 
 // Creating an event TODO add reading from FireBase, READ eventCount field so number of events on home will be updated
-  Future createChannel(DateTime dateTime, String numberOfParticipants, User creator,String address,Channel channel, String index) async {
-    final eventsCollection = channelCollection.document(channel.channelName).collection('Events');
+  Future updateEvent(DateTime dateTime, String numberOfParticipants, User creator,String address,String channelName, String index, int counter, String uid, List<dynamic>userList) async {
+    final eventsCollection = channelCollection.document(channelName).collection('Events');
+    userList.add(uid);
     return await eventsCollection.document(index).setData({
       'address': address,
       'creator': creator.first_name+" "+ creator.last_name,
       'date': dateTime,
       'numberOfParticipants': numberOfParticipants,
-      'counter' : 1,
-      'userList': [creator.uid,],
+      'counter' : counter,
+      'userList': userList,
       'eventId' : index,
+      'channelName' : channelName,
     });
   }
 }

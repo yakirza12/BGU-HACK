@@ -153,7 +153,7 @@ class _EventFormState extends State<EventForm> {
                           widget.isValid = true;//TODO how to set the state of the color without using the onPress method? when to form is Valid I want the color to chane
                           String event_key = UniqueKey().toString();
                           Navigator.pop(context);
-                          dynamic result = _auth.createEvent(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO Use Event Ref From FireBase Event so you can add him to user EventsList
+                          dynamic result = _auth.createChannel(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO Use Event Ref From FireBase Event so you can add him to user EventsList
                           widget.channel.eventCount++;
                       }
                     }
