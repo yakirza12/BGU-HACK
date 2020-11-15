@@ -7,6 +7,7 @@ class Event {
   DateTime date = DateTime.now();
   String numberOfParticipants;
   String creator;
+  String creator_id;
   int counter = 1; //how many registered
   String address;
   String eventId;
@@ -16,7 +17,7 @@ class Event {
 
 
   Event(
-      {this.date, this.numberOfParticipants, this.address, this.creator, this.eventId, this.reference,this.channelName});
+      {this.date, this.numberOfParticipants, this.address, this.creator,this.creator_id, this.eventId, this.reference,this.channelName});
 
   // static User moshe= User(emailAddress: 'moshe@peretz.com',first_name: 'moshe',last_name: 'peretz',gender: 'male',uid: '42');
 
@@ -34,6 +35,7 @@ class Event {
         assert(map['counter'] != null),
         assert(map['address'] != null),
         assert(map['eventId'] != null),
+        assert(map['creator_id'] != null),
         assert(map['channelName'] != null),
         assert(map['userList'] != null),
 
@@ -41,6 +43,7 @@ class Event {
         numberOfParticipants = map['numberOfParticipants'],
         creator = map['creator'],
         counter = map['counter'],
+        creator_id = map['creator_id'],
         address = map['address'],
         eventId = map['eventId'],
         channelName = map['channelName'],
@@ -55,6 +58,7 @@ class Event {
       'numberOfParticipants': numberOfParticipants,
       'creator': creator,
       'counter': counter,
+      'creator_id': creator_id,
       'address': address,
       'eventId': eventId,
       'channelName' : channelName,
