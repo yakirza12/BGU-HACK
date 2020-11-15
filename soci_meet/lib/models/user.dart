@@ -14,8 +14,8 @@ class User{ // the user object, need to be expandent in the future
   User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender,this.reference}); //the constructor for user
 
   User.fromMap(Map<String, dynamic> map,String _uid, {this.reference}):
-        assert(map['emailAddress'] != null),
         assert(map['first_name'] != null),
+        assert(map['emailAddress'] != null),
         assert(map['last_name'] != null),
         assert(map['gender'] != null),
         assert(map['userEventsIdList'] != null),

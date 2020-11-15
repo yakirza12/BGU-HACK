@@ -18,9 +18,23 @@ class ChannelsDatabaseServices {
   Future updateEvent(DateTime dateTime, String numberOfParticipants, User creator,String address,String channelName, String index, int counter, String uid, List<dynamic>userList) async {
     final eventsCollection = channelCollection.document(channelName).collection('Events');
     userList.add(uid);
+    return await eventsCollection.document(index).updateData({
+     /* 'address': address,
+      'date': dateTime,
+      'numberOfParticipants': numberOfParticipants,*/
+      'counter' : counter,
+      'userList': userList,
+     /* 'eventId' : index,
+      'channelName' : channelName,*/
+    });
+  }
+  Future createEvent(DateTime dateTime, String numberOfParticipants, User creator,String address,String channelName, String index, int counter, String uid, List<dynamic>userList) async {
+    final eventsCollection = channelCollection.document(channelName).collection('Events');
+    userList.add(uid);
     return await eventsCollection.document(index).setData({
       'address': address,
       'creator': creator.first_name+" "+ creator.last_name,
+      'creator_id' : creator.uid,
       'date': dateTime,
       'numberOfParticipants': numberOfParticipants,
       'counter' : counter,

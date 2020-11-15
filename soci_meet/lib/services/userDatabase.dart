@@ -3,25 +3,32 @@ import 'package:socimeet/models/user.dart';
 
 
 
-class UserDatabaseService{
+class UserDatabaseService {
   final String uid;
-  UserDatabaseService({ this.uid, String first_name,String last_name, String gender, String email});
+
+  UserDatabaseService(
+      { this.uid, String first_name, String last_name, String gender, String email});
 
 //collection  reference
-  final CollectionReference userCollection = Firestore.instance.collection('users');
+  final CollectionReference userCollection = Firestore.instance.collection(
+      'users');
 
-  Future updateUserData(String emailAddress ,String first_name ,String last_name, String gender, Map<String,String> userEventsIdList) async
+  Future updateUserData(String emailAddress, String first_name,
+      String last_name, String gender,
+      Map<String, String> userEventsIdList) async
   {
-    print("THIS IS USERCOLLECTION:  "+userCollection.document(uid).get().toString());
+    print("THIS IS USERCOLLECTION:  " +
+        userCollection.document(uid).get().toString());
     return await userCollection.document(uid).setData({
       'emailAddress': emailAddress,
-      'first_name' : first_name,
-      'last_name' : last_name,
-      'gender' : gender,
-      'userEventsIdList' : userEventsIdList,
+      'first_name': first_name,
+      'last_name': last_name,
+      'gender': gender,
+      'userEventsIdList': userEventsIdList,
     });
   }
-
+}
+/*
   Future addGuestData(String index ,String proximityGroup ,String last_name ,String first_name,int quantity_invited) async {
     return await userCollection.document(uid).collection('guests').document(index).
     setData({
@@ -29,9 +36,9 @@ class UserDatabaseService{
       'last_name' : last_name,
       'first_name' : first_name,
       'quantity_invited' : quantity_invited
-    });
+    });*/
 
-  }
+
 // /* For Update The data Cell**/
 //   Future updateGuestsData(String proximityGroup ,String last_name ,String first_name,int quantity_invited) async
 //   {
@@ -65,4 +72,3 @@ class UserDatabaseService{
 
 }
 */
-}

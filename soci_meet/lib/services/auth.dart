@@ -113,7 +113,7 @@ class AuthService {
   Future createChannel(DateTime dateTime, String numberOfParticipants, User creator,
       String address,Channel channel ,String index) async {
     try {
-      return await ChannelsDatabaseServices().updateEvent(
+      return await ChannelsDatabaseServices().createEvent(
           dateTime, numberOfParticipants, creator, address,channel.channelName,index, 1,creator.uid,[]);
     }
     catch (e) {
