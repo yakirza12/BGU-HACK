@@ -7,7 +7,8 @@ class Channel {
 
   Map<String,User> users; //unique UserId ==> will help us get boolean when added\ removed\ already in\ not signed
   List<Event> events;
-  String chanelName;
+  String channelName;
+  int eventCount = 0;
 
-  Channel({this.chanelName,this.users,this.events});
+  Channel({this.channelName,this.users,this.events});
 }

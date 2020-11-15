@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/services/userDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,7 +39,7 @@ class AuthService {
 //register with email and password
   Future registerWithEmailAndPassword(String email, String Password,
       String first_name, String last_name, String gender,
-      List<String> events) async {
+      Map <String,String> userEventsIdList) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: Password);
@@ -46,7 +47,7 @@ class AuthService {
       // create Document for user database.
       await UserDatabaseService(uid: user.uid,email:email,first_name:first_name,last_name:last_name,gender:gender).updateUserData(
           email, first_name, last_name, gender,
-          events); // sign the user document to get his data.
+          userEventsIdList); // sign the user document to get his data.
       User appUser = _userFromFirebaseUser(user, first_name, last_name, gender);
       print("THIS IS APPUSER: "+ appUser.toString());
       //  _userList.putIfAbsent(user.uid,() => appUser);
@@ -110,10 +111,10 @@ class AuthService {
 
   // Creating an event
   Future createChannel(DateTime dateTime, String numberOfParticipants, User creator,
-      String address,String channel ,String index) async {
+      String address,Channel channel ,String index) async {
     try {
-      return await ChannelsDatabaseServices().createEvent(
-          dateTime, numberOfParticipants, creator, address,channel,index);
+      return await ChannelsDatabaseServices().updateEvent(
+          dateTime, numberOfParticipants, creator, address,channel.channelName,index, 1,creator.uid,[]);
     }
     catch (e) {
       print(e);

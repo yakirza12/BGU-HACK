@@ -39,14 +39,8 @@ class _HomeState extends State<Home> {
 
   final AuthService _auth = AuthService();
 
-  static User moshe = User(
-      emailAddress: 'moshe@peretz.com',
-      first_name: 'moshe',
-      last_name: 'peretz',
-      gender: 'male',
-      uid: '42');
 
-  static List<Event> plist = [
+  static List<Event> userEventsIdList = [
     // Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipants: 50,address: "Rager 155, be'er-Sheva",creator: moshe ),
     // Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipants: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
     // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
@@ -54,14 +48,14 @@ class _HomeState extends State<Home> {
     // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
   ];
 
-  static Map<String, User> ulist = {};
+  static Map<String, User> ulist = {};/*A list of users which subscribes to a channel mapped by the channel name */
 
   static Channel parties =
-      Channel(chanelName: "Parties", users: ulist, events: plist);
+      Channel(channelName: "Parties", users: ulist, events: userEventsIdList);
   static Channel shabatDinner =
-      Channel(chanelName: "Shabat Dinner", users: ulist, events: plist);
+      Channel(channelName: "Shabat Dinner", users: ulist, events: userEventsIdList);
   static Channel sport =
-      Channel(chanelName: "Sport Games", users: ulist, events: plist);
+      Channel(channelName: "Sport Games", users: ulist, events: userEventsIdList);
   static List<Channel> arrayChannels = [parties, shabatDinner, sport];
 
   Widget cardTemplate(Event eve,User user) {
@@ -83,7 +77,7 @@ class _HomeState extends State<Home> {
               ),
               SizedBox(height: 6.0),
               Text(
-                ' ', //TODO ADD FUNCTION FOR USER NAME
+                user.first_name+" "+ user.last_name,
                 style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.grey[800],
@@ -104,7 +98,7 @@ class _HomeState extends State<Home> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => partyWidget(eve)));
+                          builder: (context) => partyWidget(eve,user)));
                 },
                 icon: Icon(Icons.info),
                 label: Text(''),
@@ -118,7 +112,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final double channelHeight = size.height * 0.30;
-    var _user = widget.login_user;
+    User _user = widget.login_user;
     return StreamBuilder<DocumentSnapshot>(
         stream: Firestore.instance
             .collection('users')
@@ -128,7 +122,7 @@ class _HomeState extends State<Home> {
           if (!snapshot.hasData) {
             return LinearProgressIndicator();
           } else {
-            User user = /*widget.login_user;*/User.fromSnapshot(snapshot.data, _user.uid);
+            _user = User.fromSnapshot(snapshot.data, _user.uid);
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
@@ -187,13 +181,13 @@ class _HomeState extends State<Home> {
                         width: size.width,
                         alignment: Alignment.topCenter,
                         height: channelHeight,
-                        child: CategoriesScroller(widget.login_user),
+                        child: CategoriesScroller(_user,arrayChannels),
                       ),
                     ),
                     Expanded(
                         child: ListView.builder(
                             controller: controller,
-                            itemCount: plist.length,
+                            itemCount: userEventsIdList.length,
                             padding: EdgeInsets.only(top: 0, bottom: 0),
                             physics: BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
@@ -215,7 +209,7 @@ class _HomeState extends State<Home> {
                                     child: Align(
                                       heightFactor: 0.7,
                                       alignment: Alignment.topCenter,
-                                      child: cardTemplate(plist[index],user),
+                                      child: cardTemplate(userEventsIdList[index],_user),
                                     ),
                                   ));
                             })),
@@ -230,8 +224,9 @@ class _HomeState extends State<Home> {
 
 class CategoriesScroller extends StatelessWidget {
   final User login_user;
+  final List<Channel> arrayChannels;
 
-  const CategoriesScroller(this.login_user);
+  const CategoriesScroller(this.login_user,this.arrayChannels);
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +248,7 @@ class CategoriesScroller extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChannelWidget("Parties", login_user)))
+                                ChannelWidget(login_user, arrayChannels[0])))
                   },
                   child: Container(
                     width: 150,
@@ -278,7 +273,7 @@ class CategoriesScroller extends StatelessWidget {
                             height: 10,
                           ),
                           Text(
-                            "17 Available Events",
+                            arrayChannels[0].events.length.toString()+ " Available Events",
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],
@@ -292,7 +287,7 @@ class CategoriesScroller extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChannelWidget("Shabat Dinner", login_user)))
+                                ChannelWidget( login_user,arrayChannels[1])))
                   },
                   child: Container(
                     width: 150,
@@ -318,7 +313,7 @@ class CategoriesScroller extends StatelessWidget {
                               height: 10,
                             ),
                             Text(
-                              "3 Available Events",
+                              arrayChannels[1].events.length.toString()+ " Available Events",
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
@@ -334,7 +329,7 @@ class CategoriesScroller extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChannelWidget("SportGames", login_user)))
+                                ChannelWidget(login_user,arrayChannels[2])))
                   },
                   child: Container(
                     width: 150,
@@ -359,7 +354,7 @@ class CategoriesScroller extends StatelessWidget {
                             height: 10,
                           ),
                           Text(
-                            "12 Available Events",
+                            arrayChannels[2].events.length.toString()+ " Available Events",
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],
@@ -476,7 +471,7 @@ class ChannelCard extends StatelessWidget {
               top: 0,
               right: 0,
               child: Hero(
-                tag: '${channel.chanelName}',
+                tag: '${channel.channelName}',
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 50),
                   height: 0,
@@ -501,7 +496,7 @@ class ChannelCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: kDefaultPadding),
                       child: Text(
-                        channel.chanelName,
+                        channel.channelName,
                         style: Theme.of(context).textTheme.button,
                       ),
                     ),

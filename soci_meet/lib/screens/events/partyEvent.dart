@@ -3,23 +3,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/event.dart';
+import 'package:socimeet/models/user.dart';
+import 'package:socimeet/services/channelsDB.dart';
 
-
-/*
-*
-* class Event {
-* String uId;
-  DateTime date;
-  int numberOfParticipantes;
-  int counter;
-  User creator;
-  String address;
-
-  Event({this.date, this.numberOfParticipantes, this.address, this.creator});
-}
-*
-* */
-showAlertDialog(BuildContext context) {
+showAlertDialog(BuildContext context,String msg) {
 
   // set up the buttons
   Widget okButton = FlatButton(
@@ -31,7 +18,7 @@ showAlertDialog(BuildContext context) {
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: Text("Error"),
-    content: Text("This event is already full!"),
+    content: Text(msg),
     actions: [
       okButton
     ],
@@ -49,8 +36,10 @@ showAlertDialog(BuildContext context) {
 
 class partyWidget extends StatefulWidget {
   Event myEvent;
-  partyWidget(Event myEvent){
+  User login_user;
+  partyWidget(Event myEvent,User login_user){
     this.myEvent=myEvent;
+    this.login_user = login_user;
   }
   @override
   _State createState() => _State(myEvent);
@@ -79,7 +68,7 @@ class _State extends State<partyWidget> {
               Row(
                 children: [
                   Text('Creator: ', style: TextStyle(fontSize: 20) ,),
-                  Text('ADD NAME', style: TextStyle(fontSize: 20)), // TODO ADD uSER NAME
+                  Text(myEvent.creator, style: TextStyle(fontSize: 20)),
                 ],
               ),
               SizedBox(height: 30,),
@@ -117,16 +106,25 @@ class _State extends State<partyWidget> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
+          for(int i = 0;i<myEvent.userList.length;i++){
+            if(widget.login_user.uid == myEvent.userList[i] ){
+              isJoined = true;
+            }
+          }
           if(!isJoined){
-            if(myEvent.counter < (myEvent.numberOfParticipants as int)){
+            if(myEvent.counter < int.parse(myEvent.numberOfParticipants)){
               setState(() {
                 myEvent.counter++;
+                ChannelsDatabaseServices().updateEvent(myEvent.date, myEvent.numberOfParticipants, widget.login_user, myEvent.address, myEvent.channelName, myEvent.eventId, myEvent.counter, widget.login_user.uid,myEvent.userList);
               });
               isJoined=true;
             }
             else{
-              showAlertDialog(context);
+              showAlertDialog(context,"This event is already full!");
             }
+          }
+          else{
+            showAlertDialog(context,widget.login_user.first_name+" you are already a part of this event");
           }
         },
         child: Text('join'),

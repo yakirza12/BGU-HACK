@@ -10,11 +10,13 @@ class Event {
   int counter = 1; //how many registered
   String address;
   String eventId;
+  String channelName;
+  List<dynamic> userList;
   final DocumentReference reference;
 
 
   Event(
-      {this.date, this.numberOfParticipants, this.address, this.creator, this.eventId, this.reference});
+      {this.date, this.numberOfParticipants, this.address, this.creator, this.eventId, this.reference,this.channelName});
 
   // static User moshe= User(emailAddress: 'moshe@peretz.com',first_name: 'moshe',last_name: 'peretz',gender: 'male',uid: '42');
 
@@ -32,12 +34,17 @@ class Event {
         assert(map['counter'] != null),
         assert(map['address'] != null),
         assert(map['eventId'] != null),
+        assert(map['channelName'] != null),
+        assert(map['userList'] != null),
+
         date = DateTime.fromMicrosecondsSinceEpoch(map['date'].microsecondsSinceEpoch),
         numberOfParticipants = map['numberOfParticipants'],
         creator = map['creator'],
         counter = map['counter'],
         address = map['address'],
-        eventId = map['eventId'];
+        eventId = map['eventId'],
+        channelName = map['channelName'],
+        userList = map['userList'];
 
   Event.fromSnapshot(DocumentSnapshot snapshot) :
         this.fromMap(snapshot.data, reference: snapshot.reference);
@@ -50,6 +57,7 @@ class Event {
       'counter': counter,
       'address': address,
       'eventId': eventId,
+      'channelName' : channelName,
     };
   }
 }

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/models/user.dart';
+import 'package:socimeet/services/userDatabase.dart';
 
 class ChannelsDatabaseServices {
   final String cid;
@@ -12,20 +14,19 @@ class ChannelsDatabaseServices {
   final CollectionReference channelCollection = Firestore.instance.collection(
       'Channels');
 
-// Creating an event
-  Future createEvent(DateTime dateTime, String numberOfParticipants, User creator,
-      String address,String channel, String index) async {
-   //final index = UniqueKey().toString();
-   print("THIS IS THE CREATOR: "+ creator.first_name);
-    final eventsCollection = channelCollection.document(channel).collection('Events');
+// Creating an event TODO add reading from FireBase, READ eventCount field so number of events on home will be updated
+  Future updateEvent(DateTime dateTime, String numberOfParticipants, User creator,String address,String channelName, String index, int counter, String uid, List<dynamic>userList) async {
+    final eventsCollection = channelCollection.document(channelName).collection('Events');
+    userList.add(uid);
     return await eventsCollection.document(index).setData({
       'address': address,
-      'creator': creator.first_name,
+      'creator': creator.first_name+" "+ creator.last_name,
       'date': dateTime,
       'numberOfParticipants': numberOfParticipants,
-      'counter' : 1,
-      'userList': [creator.uid,],
+      'counter' : counter,
+      'userList': userList,
       'eventId' : index,
+      'channelName' : channelName,
     });
   }
 }

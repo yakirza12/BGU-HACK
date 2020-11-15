@@ -15,9 +15,9 @@ import '../events/partyEvent.dart';
 
 class ChannelWidget extends StatefulWidget {
   User login_user;
-  final ChannelName;
+  final Channel channel;
 
-  ChannelWidget(this.ChannelName,this.login_user);
+  ChannelWidget(this.login_user,this.channel);
 
   // ignore: non_constant_identifier_names
   // final User login_user;
@@ -58,7 +58,7 @@ class _ChannelState extends State<ChannelWidget> {
                       Navigator.push(context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  partyWidget(eve)
+                                  partyWidget(eve,widget.login_user)
                           )
 
                       );
@@ -73,7 +73,7 @@ class _ChannelState extends State<ChannelWidget> {
 
               // SizedBox(height: 2.0),
               Text(
-                ' ', //Todo UID
+                eve.creator,
                 style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.grey[800],
@@ -117,7 +117,7 @@ class _ChannelState extends State<ChannelWidget> {
     }).toList();
     for (int i = 0; i < _events.length; i++) { /* Removes events one day after they are over from the DB */
       if (_events[i].date.day.compareTo(DateTime.now().day+1) < 0 && _events[i].date.month.compareTo(DateTime.now().month)==0 && _events[i].date.year.compareTo(DateTime.now().year)==0 ) {
-        Firestore.instance.collection('Channels').document(widget.ChannelName)
+        Firestore.instance.collection('Channels').document(widget.channel.channelName)
             .collection('Events').document(_events[i].eventId)
             .delete();
         _events.remove(i);
@@ -131,7 +131,7 @@ class _ChannelState extends State<ChannelWidget> {
     return StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance
             .collection('Channels')
-            .document(widget.ChannelName)
+            .document(widget.channel.channelName)
             .collection('Events')
             .snapshots(),
         builder: (context, snapshot) {
@@ -145,7 +145,7 @@ class _ChannelState extends State<ChannelWidget> {
                 backgroundColor: Colors.grey[200],
                 appBar: AppBar(
                   backgroundColor: Colors.blue[900],
-                  title: Text(widget.ChannelName),
+                  title: Text(widget.channel.channelName),
                   centerTitle: true,
                   elevation: 0,
                 ),
@@ -155,7 +155,7 @@ class _ChannelState extends State<ChannelWidget> {
                     var alertDialog = AlertDialog(
                       title: Text("Add Event"),
                       content: EventForm(
-                          widget.ChannelName, widget.login_user, _events),
+                          widget.channel, widget.login_user, _events),
                     );
                     showDialog(context: context, builder: (_) => alertDialog);
 //         Navigator.push(context,

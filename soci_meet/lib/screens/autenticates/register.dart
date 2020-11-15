@@ -175,7 +175,8 @@ class _RegisterState extends State<Register> {
                             onPressed: () async {
                               if(_formKey.currentState.validate())//will check if our from is legit
                                   {
-                                dynamic result = await _auth.registerWithEmailAndPassword(email, password, first_name, last_name,gender,[]);
+                                dynamic result = await _auth.registerWithEmailAndPassword(email, password, first_name, last_name,gender,
+                                    Map<String,String>());
                                 if(result == null){
                                   setState(() => error = 'Could not sign in with those credentials');//TODO check
                                 }
