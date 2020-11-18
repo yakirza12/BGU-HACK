@@ -25,11 +25,11 @@ class ChannelWidget extends StatefulWidget {
   // PartiesChannel(this.login_user);
 
   @override
-  _ChannelState createState() => _ChannelState();
+  ChannelState createState() => ChannelState();
 }
 
 
-class _ChannelState extends State<ChannelWidget> {
+class ChannelState extends State<ChannelWidget> {
   //uid should be unique and be received from the server
 
   List<Event> _events = [];

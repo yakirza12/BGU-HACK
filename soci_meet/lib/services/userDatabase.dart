@@ -17,8 +17,6 @@ class UserDatabaseService {
       String last_name, String gender,
       Map<String, String> userEventsIdList) async
   {
-    print("THIS IS USERCOLLECTION:  " +
-        userCollection.document(uid).get().toString());
     return await userCollection.document(uid).setData({
       'emailAddress': emailAddress,
       'first_name': first_name,
@@ -29,59 +27,15 @@ class UserDatabaseService {
   }
   Future updateUserEvents(User user) async { //update the events of specific user in firebase
     try {
-      print("now upadte..."+user.userEventsIdList.toString());
+      print("now update..."+user.userEventsIdList.toString());
       return await userCollection.document(user.uid).updateData({
         'userEventsIdList': user.userEventsIdList,
       });
     }
     catch (e) {
-      print("the user is not update"+e);
+      print("the userEventIdList is not updated"+e);
     }
   }
 
 }
 
-/*
-  Future addGuestData(String index ,String proximityGroup ,String last_name ,String first_name,int quantity_invited) async {
-    return await userCollection.document(uid).collection('guests').document(index).
-    setData({
-      'proximityGroup': proximityGroup,
-      'last_name' : last_name,
-      'first_name' : first_name,
-      'quantity_invited' : quantity_invited
-    });*/
-
-
-// /* For Update The data Cell**/
-//   Future updateGuestsData(String proximityGroup ,String last_name ,String first_name,int quantity_invited) async
-//   {
-//     return await guestsCollection.document(uid).setData({
-//       'proximityGroup': proximityGroup,
-//       'last_name' : last_name,
-//       'first_name' : first_name,
-//       'quantity_invited' : quantity_invited
-//     });
-//   }
-
-/*
-  //get list guests from snapshot
-  List<Guest> _guestsListFromSnapshot(QuerySnapshot snapshot){
-      return snapshot.documents.map( (doc) {
-        return Guest(
-           proximityGroup: doc.data['proximityGroup'] ?? '',
-             last_name :doc.data['last_name'] ?? '',
-            first_name : doc.data['first_name'] ?? '',
-            quantity_invited: doc.data['quantity_invited'] ?? 0,
-        );
-      }).toList();
-  }
- //get guests stream
-  Stream<List<Guest>> get guests{
-  return  guestsCollection.document(uid).collection('guests').snapshots().map(
-    _guestsListFromSnapshot);
-  }
-
-
-
-}
-*/
