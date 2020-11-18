@@ -27,7 +27,20 @@ class UserDatabaseService {
       'userEventsIdList': userEventsIdList,
     });
   }
+  Future updateUserEvents(User user) async { //update the events of specific user in firebase
+    try {
+      print("now upadte..."+user.userEventsIdList.toString());
+      return await userCollection.document(user.uid).updateData({
+        'userEventsIdList': user.userEventsIdList,
+      });
+    }
+    catch (e) {
+      print("the user is not update"+e);
+    }
+  }
+
 }
+
 /*
   Future addGuestData(String index ,String proximityGroup ,String last_name ,String first_name,int quantity_invited) async {
     return await userCollection.document(uid).collection('guests').document(index).
