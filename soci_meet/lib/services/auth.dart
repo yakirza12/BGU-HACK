@@ -17,6 +17,8 @@ class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth
       .instance; //singeltone of the firebase aut h object. to get all data from firebase
+  final CollectionReference userCollection = Firestore.instance.collection(
+      'users');
 //create user object based firebase object
   User _userFromFirebaseUser(FirebaseUser user, String first_name,
       String last_name, String gender) {
@@ -120,5 +122,6 @@ class AuthService {
       print(e);
     }
   }
+
 
 }

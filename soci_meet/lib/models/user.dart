@@ -31,5 +31,4 @@ class User{ // the user object, need to be expandent in the future
       : this.fromMap(snapshot.data,user_uid,reference: snapshot.reference);
 
 
-
 }

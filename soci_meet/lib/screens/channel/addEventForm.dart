@@ -6,6 +6,7 @@ import 'package:socimeet/models/user.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:socimeet/services/auth.dart';
+import 'package:socimeet/services/userDatabase.dart';
 import 'channel.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/services/channelsDB.dart';
@@ -29,7 +30,6 @@ class EventForm extends StatefulWidget {
 class _EventFormState extends State<EventForm> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
-
   DateTime date;
   String numberOfParticipantes;
   User creator;
@@ -153,7 +153,19 @@ class _EventFormState extends State<EventForm> {
                           widget.isValid = true;//TODO how to set the state of the color without using the onPress method? when to form is Valid I want the color to chane
                           String event_key = UniqueKey().toString();
                           Navigator.pop(context);
+                          print("this is the event list of the user before update"+widget.user.userEventsIdList.toString());
                           dynamic result = _auth.createChannel(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO Use Event Ref From FireBase Event so you can add him to user EventsList
+                          if(widget.user.userEventsIdList.containsKey(widget.channel.channelName)){ //adding event id if the channel exist
+                            widget.user.userEventsIdList.update(widget.channel.channelName,
+                                    (value) {
+                                       value.add(event_key);
+                                       return value;
+                                    });
+                          }
+                          else
+                           widget.user.userEventsIdList.addAll({widget.channel.channelName : [event_key]}); //if its a new chanel add the pair of the channel and event id
+                          print("this is the event list of the user after update"+widget.user.userEventsIdList.toString());
+                          UserDatabaseService().updateUserEvents(widget.user); //update in database
                           widget.channel.eventCount++;
                       }
                     }

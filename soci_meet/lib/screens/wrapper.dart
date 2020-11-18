@@ -14,7 +14,6 @@ class Wrapper extends StatelessWidget {
 
     final AuthService _auth =  AuthService();
     final user  = Provider.of<User>(context); // listen to the provider, if it will be null we will navigate to the log in page. else we can access the user data from the provider.
-
      if(user == null) {
       return Authenticate();
     }else{
