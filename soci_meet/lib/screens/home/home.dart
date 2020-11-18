@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:socimeet/constants.dart';
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/screens/events/partyEvent.dart';
@@ -108,6 +110,20 @@ class _HomeState extends State<Home> {
         ));
   }
 
+  Stream<DocumentSnapshot> _buildDocuments(User user)   {
+    return Firestore.instance.collection('Channels').document('Parties').snapshots();
+  }
+  void _buildEventsList(BuildContext context, List<DocumentSnapshot> snapshot, User user) {
+     userEventsIdList = snapshot.map((data) {
+      final Event event = Event.fromSnapshot(data);
+      print("this is event "+event.toString());
+      return event;
+    }).toList();
+     for(int i=0;i<userEventsIdList.length;i++){
+       if(!user.userEventsIdList['Parties'].contains(userEventsIdList[i].eventId))
+         userEventsIdList.remove(userEventsIdList[i]);
+     }
+  }
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -123,7 +139,7 @@ class _HomeState extends State<Home> {
             return LinearProgressIndicator();
           } else {
             _user = User.fromSnapshot(snapshot.data, _user.uid);
-            return Scaffold(
+              return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
                 backgroundColor: Colors.transparent,
@@ -185,40 +201,51 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Expanded(
-                        child: ListView.builder(
-                            controller: controller,
-                            itemCount: userEventsIdList.length,
-                            padding: EdgeInsets.only(top: 0, bottom: 0),
-                            physics: BouncingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              double scale = 1.0;
-                              if (topContainer > 0.5) {
-                                scale = index + 0.5 - topContainer;
-                                if (scale < 0) {
-                                  scale = 0;
-                                } else if (scale > 1) {
-                                  scale = 1;
-                                }
-                              }
-                              return Opacity(
-                                  opacity: scale,
-                                  child: Transform(
-                                    transform: Matrix4.identity()
-                                      ..scale(scale, scale),
-                                    alignment: Alignment.bottomCenter,
-                                    child: Align(
-                                      heightFactor: 0.7,
-                                      alignment: Alignment.topCenter,
-                                      child: cardTemplate(userEventsIdList[index],_user),
-                                    ),
-                                  ));
-                            })),
-                  ],
+                          child: StreamBuilder<QuerySnapshot>(
+                              stream: Firestore.instance
+                                  .collection('Channels')
+                                  .document('Parties')
+                                  .collection('Events')
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData)
+                                  return LinearProgressIndicator();
+                                else {
+                                     _buildEventsList(context,snapshot.data.documents,_user);
+                                     return ListView.builder(
+                                      controller: controller,
+                                      itemCount: userEventsIdList.length,
+                                      padding: EdgeInsets.only(top: 0, bottom: 0),
+                                      physics: BouncingScrollPhysics(),
+                                      itemBuilder: (context, index) {
+                                      double scale = 1.0;
+                                      if (topContainer > 0.5) {
+                                      scale = index + 0.5 - topContainer;
+                                      if (scale < 0) {
+                                      scale = 0;
+                                      } else if (scale > 1) {
+                                     scale = 1;
+                                        }
+                                      }
+    return Opacity(
+    opacity: scale,
+    child: Transform(
+    transform: Matrix4.identity()
+    ..scale(scale, scale),
+    alignment: Alignment.bottomCenter,
+    child: Align(
+    heightFactor: 0.7,
+    alignment: Alignment.topCenter,
+    child: cardTemplate(userEventsIdList[index],_user),
+    ),
+    ));
+    });
+    }}),
+    )],
                 ),
               ),
             );
-          }
-        });
+        }});
   }
 }
 
