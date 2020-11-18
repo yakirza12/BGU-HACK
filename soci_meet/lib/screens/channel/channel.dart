@@ -138,7 +138,7 @@ class ChannelState extends State<ChannelWidget> {
           if (!snapshot.hasData)
             return LinearProgressIndicator();
           else {
-            _buildEventsList(context, snapshot.data.documents);//TODO HERE THE LIST IS CREATED
+            _buildEventsList(context, snapshot.data.documents);
             return SafeArea(
               bottom: false,
               child: Scaffold(

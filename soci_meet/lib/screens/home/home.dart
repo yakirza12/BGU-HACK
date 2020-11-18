@@ -67,9 +67,10 @@ class _HomeState extends State<Home> {
       final Event event = Event.fromSnapshot(data);
       print("this is event " + event.toString());
       return event;
-    }).toList()) ;
+    }).toList());
+    print("\n\n\nThis is the userEvent list len\n" + userEventsList.length.toString());
     for (int i = 0; i < userEventsList.length; i++) {
-      if (!user.userEventsIdList[channelName]
+      if (user.userEventsIdList[channelName] != null && !user.userEventsIdList[channelName]
           .contains(userEventsList[i].eventId)) {
         userEventsList.remove(userEventsList[i]);
         i--;
@@ -158,7 +159,154 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Expanded(
-                      child: createUserEventList(_user, arrayChannels),
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: Firestore.instance
+                              .collection('Channels')
+                              .document('Parties')
+                              .collection('Events')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData)
+                              return LinearProgressIndicator();
+                            else {
+                              print(
+                                  "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
+                              _buildEventsList(
+                                  context, snapshot.data.documents, _user,
+                                  'Parties');
+                              return ListView.builder(
+                                  controller: controller,
+                                  itemCount: userEventsList.length,
+                                  padding: EdgeInsets.only(top: 0, bottom: 0),
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    double scale = 1.0;
+                                    if (topContainer > 0.5) {
+                                      scale = index + 0.5 - topContainer;
+                                      if (scale < 0) {
+                                        scale = 0;
+                                      } else if (scale > 1) {
+                                        scale = 1;
+                                      }
+                                    }
+                                    return Opacity(
+                                        opacity: scale,
+                                        child: Transform(
+                                          transform: Matrix4.identity()
+                                            ..scale(scale, scale),
+                                          alignment: Alignment.bottomCenter,
+                                          child: Align(
+                                            heightFactor: 0.7,
+                                            alignment: Alignment.topCenter,
+                                            child: ChannelState().cardTemplate(
+                                                userEventsList[index]),
+                                          ),
+                                        ));
+                                  });
+                            }
+                          }
+
+                      ),
+                    ),
+                    Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: Firestore.instance
+                              .collection('Channels')
+                              .document('Parties')
+                              .collection('Events')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData)
+                              return LinearProgressIndicator();
+                            else {
+                              print(
+                                  "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
+                              _buildEventsList(
+                                  context, snapshot.data.documents, _user,
+                                  'Parties');
+                              return ListView.builder(
+                                  controller: controller,
+                                  itemCount: userEventsList.length,
+                                  padding: EdgeInsets.only(top: 0, bottom: 0),
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    double scale = 1.0;
+                                    if (topContainer > 0.5) {
+                                      scale = index + 0.5 - topContainer;
+                                      if (scale < 0) {
+                                        scale = 0;
+                                      } else if (scale > 1) {
+                                        scale = 1;
+                                      }
+                                    }
+                                    return Opacity(
+                                        opacity: scale,
+                                        child: Transform(
+                                          transform: Matrix4.identity()
+                                            ..scale(scale, scale),
+                                          alignment: Alignment.bottomCenter,
+                                          child: Align(
+                                            heightFactor: 0.7,
+                                            alignment: Alignment.topCenter,
+                                            child: ChannelState().cardTemplate(
+                                                userEventsList[index]),
+                                          ),
+                                        ));
+                                  });
+                            }
+                          }
+
+                      ),
+                    ),
+                    Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: Firestore.instance
+                              .collection('Channels')
+                              .document('Sport Games')
+                              .collection('Events')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData)
+                              return LinearProgressIndicator();
+                            else {
+                              print(
+                                  "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
+                              _buildEventsList(
+                                  context, snapshot.data.documents, _user,
+                                  'Shabat Dinner');
+                              return ListView.builder(
+                                  controller: controller,
+                                  itemCount: userEventsList.length,
+                                  padding: EdgeInsets.only(top: 0, bottom: 0),
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    double scale = 1.0;
+                                    if (topContainer > 0.5) {
+                                      scale = index + 0.5 - topContainer;
+                                      if (scale < 0) {
+                                        scale = 0;
+                                      } else if (scale > 1) {
+                                        scale = 1;
+                                      }
+                                    }
+                                    return Opacity(
+                                        opacity: scale,
+                                        child: Transform(
+                                          transform: Matrix4.identity()
+                                            ..scale(scale, scale),
+                                          alignment: Alignment.bottomCenter,
+                                          child: Align(
+                                            heightFactor: 0.7,
+                                            alignment: Alignment.topCenter,
+                                            child: ChannelState().cardTemplate(
+                                                userEventsList[index]),
+                                          ),
+                                        ));
+                                  });
+                            }
+                          }
+
+                      ),
                     ),
                   ],
                 ),
@@ -168,59 +316,59 @@ class _HomeState extends State<Home> {
         });
   }
 
-  createUserEventList(User user, List<Channel> arrayChannels) {
-    for(int i = 0; i<arrayChannels.length;i++){
-      updateUserEventList(arrayChannels[i], user);
-    }
-    return ListView.builder(
-        controller: controller,
-        itemCount: userEventsList.length,
-        padding: EdgeInsets.only(top: 0, bottom: 0),
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, index) {
-          double scale = 1.0;
-          if (topContainer > 0.5) {
-            scale = index + 0.5 - topContainer;
-            if (scale < 0) {
-              scale = 0;
-            } else if (scale > 1) {
-              scale = 1;
-            }
-          }
-          return Opacity(
-              opacity: scale,
-              child: Transform(
-                transform: Matrix4.identity()
-                  ..scale(scale, scale),
-                alignment: Alignment.bottomCenter,
-                child: Align(
-                  heightFactor: 0.7,
-                  alignment: Alignment.topCenter,
-                  child: ChannelState().cardTemplate(userEventsList[
-                  index]),
-                ),
-              ));
-        });
-  }
-
-  Widget updateUserEventList(Channel c, User user) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance
-            .collection('Channels')
-            .document(c.channelName)
-            .collection('Events')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return LinearProgressIndicator();
-          else {
-            print("\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-            _buildEventsList(
-                context, snapshot.data.documents, user, c.channelName);
-            return Text("");
-          }
-        });
-  }
+// createUserEventList(BuildContext context, User user,
+//     List<Channel> arrayChannels) {
+//   for (int i = 0; i < arrayChannels.length; i++) {
+//     updateUserEventList(context, arrayChannels[i], user);
+//   }
+//   return ListView.builder(
+//       controller: controller,
+//       itemCount: userEventsList.length,
+//       padding: EdgeInsets.only(top: 0, bottom: 0),
+//       physics: BouncingScrollPhysics(),
+//       itemBuilder: (context, index) {
+//         double scale = 1.0;
+//         if (topContainer > 0.5) {
+//           scale = index + 0.5 - topContainer;
+//           if (scale < 0) {
+//             scale = 0;
+//           } else if (scale > 1) {
+//             scale = 1;
+//           }
+//         }
+//         return Opacity(
+//             opacity: scale,
+//             child: Transform(
+//               transform: Matrix4.identity()
+//                 ..scale(scale, scale),
+//               alignment: Alignment.bottomCenter,
+//               child: Align(
+//                 heightFactor: 0.7,
+//                 alignment: Alignment.topCenter,
+//                 child: ChannelState().cardTemplate(userEventsList[index]),
+//               ),
+//             ));
+//       });
+// }
+//
+// Widget updateUserEventList(BuildContext context, Channel c, User user) {
+//   return StreamBuilder<QuerySnapshot>(
+//       stream: Firestore.instance
+//           .collection('Channels')
+//           .document(c.channelName)
+//           .collection('Events')
+//           .snapshots(),
+//       builder: (context, snapshot) {
+//         if (!snapshot.hasData)
+//           return LinearProgressIndicator();
+//         else {
+//           print("\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
+//           _buildEventsList(
+//               context, snapshot.data.documents, user, c.channelName);
+//           return Text("Could  get data");
+//         }
+//       });
+// }
 }
 
 class CategoriesScroller extends StatelessWidget {
@@ -232,7 +380,10 @@ class CategoriesScroller extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double categoryHeight =
-        MediaQuery.of(context).size.height * 0.30 - 50;
+        MediaQuery
+            .of(context)
+            .size
+            .height * 0.30 - 50;
     return SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
@@ -244,7 +395,8 @@ class CategoriesScroller extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 GestureDetector(
-                  onTap: () => {
+                  onTap: () =>
+                  {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -284,7 +436,8 @@ class CategoriesScroller extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => {
+                  onTap: () =>
+                  {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -318,7 +471,7 @@ class CategoriesScroller extends StatelessWidget {
                               arrayChannels[1].events.length.toString() +
                                   " Available Events",
                               style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
+                              TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ],
                         ),
@@ -327,7 +480,8 @@ class CategoriesScroller extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => {
+                  onTap: () =>
+                  {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -390,7 +544,9 @@ class ChannelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // It  will provide us total height and width of our screen
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: size.width / 3.4,
@@ -451,7 +607,10 @@ class ChannelCard extends StatelessWidget {
                           horizontal: kDefaultPadding),
                       child: Text(
                         channel.channelName,
-                        style: Theme.of(context).textTheme.button,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .button,
                       ),
                     ),
                     // it use the available space

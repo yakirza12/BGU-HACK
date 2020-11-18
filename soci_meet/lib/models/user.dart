@@ -27,8 +27,8 @@ class User{ // the user object, need to be expandent in the future
         userEventsIdList = map['userEventsIdList'];
 
 
-  User.fromSnapshot(DocumentSnapshot snapshot,String user_uid)
-      : this.fromMap(snapshot.data,user_uid,reference: snapshot.reference);
+  User.fromSnapshot(DocumentSnapshot snapshot,String user_uid) :
+        this.fromMap(snapshot.data,user_uid,reference: snapshot.reference);
 
 
 }
