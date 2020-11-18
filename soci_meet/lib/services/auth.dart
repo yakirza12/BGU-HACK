@@ -123,19 +123,5 @@ class AuthService {
     }
   }
 
-  Future updateUserEvents(User user) async { //update the events of specific user in firebase
-    try {
-      print("now upadte..."+user.userEventsIdList.toString());
-      return await userCollection.document(user.uid).setData({
-        'emailAddress': user.emailAddress,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'gender': user.gender,
-        'userEventsIdList': user.userEventsIdList,
-      });
-    }
-    catch (e) {
-      print("the user is not update"+e);
-    }
-  }
+
 }

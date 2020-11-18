@@ -110,9 +110,7 @@ class _HomeState extends State<Home> {
         ));
   }
 
-  Stream<DocumentSnapshot> _buildDocuments(User user)   {
-    return Firestore.instance.collection('Channels').document('Parties').snapshots();
-  }
+
   void _buildEventsList(BuildContext context, List<DocumentSnapshot> snapshot, User user) {
      userEventsIdList = snapshot.map((data) {
       final Event event = Event.fromSnapshot(data);

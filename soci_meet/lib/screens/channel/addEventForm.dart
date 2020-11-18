@@ -6,6 +6,7 @@ import 'package:socimeet/models/user.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:socimeet/services/auth.dart';
+import 'package:socimeet/services/userDatabase.dart';
 import 'channel.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/services/channelsDB.dart';
@@ -164,7 +165,7 @@ class _EventFormState extends State<EventForm> {
                           else
                            widget.user.userEventsIdList.addAll({widget.channel.channelName : [event_key]}); //if its a new chanel add the pair of the channel and event id
                           print("this is the event list of the user after update"+widget.user.userEventsIdList.toString());
-                          _auth.updateUserEvents(widget.user); //update in database
+                          UserDatabaseService().updateUserEvents(widget.user); //update in database
                           widget.channel.eventCount++;
                       }
                     }
