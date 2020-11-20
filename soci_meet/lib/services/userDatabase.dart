@@ -29,9 +29,9 @@ class UserDatabaseService {
   }
   Future updateUserEvents(User user) async { //update the events of specific user in firebase
     try {
-      print("now upadte..."+user.userEventsIdList.toString());
+      print("now upadte..."+user.userEventsIdMap.toString());
       return await userCollection.document(user.uid).updateData({
-        'userEventsIdList': user.userEventsIdList,
+        'userEventsIdList': user.userEventsIdMap,
       });
     }
     catch (e) {

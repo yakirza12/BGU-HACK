@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
   List<DocumentSnapshot> getDocuments(User user) {
     List<DocumentSnapshot> ds;
     List<DocumentSnapshot> result;
-    user.userEventsIdList.forEach((key, value) {
+    user.userEventsIdMap.forEach((key, value) {
       ds = value.map((doc) =>
           Firestore.instance.collection('Channels').document(key).collection(
               'Events').document(doc).get()).toList();
