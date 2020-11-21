@@ -121,10 +121,11 @@ class _State extends State<partyWidget> {
               setState(() {
                 myEvent.counter++;
                 EventForm(null,null,null).updateUserEventsIdMap(widget.login_user, myEvent.channelName, myEvent.eventId); //add to event id map
-                ChannelsDatabaseServices().updateEvent(myEvent.date, myEvent.numberOfParticipants, widget.login_user, myEvent.address, myEvent.channelName, myEvent.eventId, myEvent.counter, widget.login_user.uid,myEvent.userList);
+                ChannelsDatabaseServices().updateEvent( myEvent.channelName, myEvent.eventId, myEvent.counter, widget.login_user.uid,myEvent.userList);//update event in firebase + update eventUserList
                 UserDatabaseService().updateUserEvents(widget.login_user); //update in database the event id map
               });
               isJoined=true;
+              Navigator.pop(context);
             }
             else{
               showAlertDialog(context,"This event is already full!");

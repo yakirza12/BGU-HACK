@@ -151,6 +151,7 @@ class _HomeState extends State<Home> {
                         child: CategoriesScroller(_user, arrayChannels),
                       ),
                     ),
+                      /// Here the userEventsList will be printed as a card to the screen
                       // TODO needs to be deleted and modified so we won't need to hardcode the channels name and so we won't need to use an expended widget per channel),
                     // Expanded(
                     //   child: StreamBuilder<QuerySnapshot>(

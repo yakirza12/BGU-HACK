@@ -21,8 +21,7 @@ class EventForm extends StatefulWidget {
  final Channel channel;
   EventForm(this.channel,this.user,this._events);
 
-  // User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender}); //the constructor for user
-void updateUserEventsIdMap(User user, String channelName, String eventId){// add event id to the user map
+void updateUserEventsIdMap(User user, String channelName, String eventId){/// add event id to the user map
   if(user.userEventsIdMap.containsKey(channelName)){ //adding event id if the channel exist
     user.userEventsIdMap.update(channelName,
             (value) {
@@ -31,7 +30,7 @@ void updateUserEventsIdMap(User user, String channelName, String eventId){// add
         });
   }
   else
-    user.userEventsIdMap.addAll({channel.channelName : [eventId]});
+    user.userEventsIdMap.addAll({channelName : [eventId]});
 }
   @override
   _EventFormState createState() => _EventFormState();
@@ -48,7 +47,6 @@ class _EventFormState extends State<EventForm> {
 
   @override
   Widget build(BuildContext context) {
-    //   final user = Provider.of<User>(context);
     return SingleChildScrollView(
       child: Stack(
         overflow: Overflow.visible,
