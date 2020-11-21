@@ -141,7 +141,7 @@ class _EventFormState extends State<EventForm> {
                     if(form.validate())
                       widget.isValid = true;// TODO this only works correctly when user fill fields from top to bottom, need to find a better way to do it
                     setState(() {
-                      numberOfParticipantes = val;
+                      numberOfParticipants = val;
                     });
                   },
                 ),
@@ -162,7 +162,7 @@ class _EventFormState extends State<EventForm> {
                           String event_key = UniqueKey().toString();
                           Navigator.pop(context);
                           print("this is the event list of the user before update"+widget.user.userEventsIdMap.toString());
-                          dynamic result = _auth.createChannel(date, numberOfParticipantes , widget.user , address,widget.channel,event_key);//TODO Use Event Ref From FireBase Event so you can add him to user EventsList
+                          dynamic result = _auth.createChannel(date, numberOfParticipants , widget.user , address,widget.channel,event_key);//TODO Use Event Ref From FireBase Event so you can add him to user EventsList
                           widget.updateUserEventsIdMap(widget.user, widget.channel.channelName, event_key);
                           print("this is the event list of the user after update"+widget.user.userEventsIdMap.toString());
                           UserDatabaseService().updateUserEvents(widget.user); //update in database
