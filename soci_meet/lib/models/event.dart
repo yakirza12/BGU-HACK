@@ -3,6 +3,7 @@
 import 'package:socimeet/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// Template for a generic channel
 class Event {
   DateTime date = DateTime.now();
   String numberOfParticipants;
@@ -18,17 +19,10 @@ class Event {
 
   Event(
       {this.date, this.numberOfParticipants, this.address, this.creator,this.creator_id, this.eventId, this.reference,this.channelName});
-
-  // static User moshe= User(emailAddress: 'moshe@peretz.com',first_name: 'moshe',last_name: 'peretz',gender: 'male',uid: '42');
-
-  // static List<Event> plist = [
-  //   //   Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipantes: 1,address: "Rager 155, be'er-Sheva",creator: moshe ),
-  //   //   Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipantes: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
-  //   //   Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipantes: 15,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe )
-  // ];
-
-  Event.fromMap(Map<String, dynamic> map, {this.reference})
-      :
+  /// Pulling event related data from firebase
+  ///
+  /// Using fromSnapshot to receive the correct map for the data
+  Event.fromMap(Map<String, dynamic> map, {this.reference}):
         assert(map['date'] != null),
         assert(map['numberOfParticipants'] != null),
         assert(map['creator'] != null),
@@ -49,9 +43,11 @@ class Event {
         channelName = map['channelName'],
         userList = map['userList'];
 
+  /// Sending the data map from firebase to FromMap
   Event.fromSnapshot(DocumentSnapshot snapshot) :
         this.fromMap(snapshot.data, reference: snapshot.reference);
 
+  /// Updating the Event field based on data from firebase
   Map<String, dynamic> toMap() {
     return {
       'date': date,

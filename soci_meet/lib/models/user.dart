@@ -1,20 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User{ // the user object, need to be expandent in the future
-
+/// Template for a generic user
+class User {
   final String uid;
   final String emailAddress;
   final String first_name;
   final String last_name;
   final String gender;
-  Map <String,dynamic> userEventsIdMap;//TODO this should be Map<String,String> but it is not working otherwise
+  Map<String, dynamic> userEventsIdMap;
   final DocumentReference reference;
 
+  User(
+      {this.uid,
+      this.emailAddress,
+      this.first_name,
+      this.last_name,
+      this.gender,
+      this.reference}); //the constructor for user
 
-  User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender,this.reference}); //the constructor for user
-
-  User.fromMap(Map<String, dynamic> map,String _uid, {this.reference}):
-        assert(map['first_name'] != null),
+  /// Pulling user relevant data from firebase and updating user fields
+  User.fromMap(Map<String, dynamic> map, String _uid, {this.reference})
+      : assert(map['first_name'] != null),
         assert(map['emailAddress'] != null),
         assert(map['last_name'] != null),
         assert(map['gender'] != null),
@@ -26,9 +32,7 @@ class User{ // the user object, need to be expandent in the future
         gender = map['gender'],
         userEventsIdMap = map['userEventsIdList'];
 
-
-  User.fromSnapshot(DocumentSnapshot snapshot,String user_uid) :
-        this.fromMap(snapshot.data,user_uid,reference: snapshot.reference);
-
-
+  /// Sending the data map to fromMap function
+  User.fromSnapshot(DocumentSnapshot snapshot, String user_uid)
+      : this.fromMap(snapshot.data, user_uid, reference: snapshot.reference);
 }

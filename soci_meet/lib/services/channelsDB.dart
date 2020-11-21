@@ -14,20 +14,17 @@ class ChannelsDatabaseServices {
   final CollectionReference channelCollection = Firestore.instance.collection(
       'Channels');
 
-// Creating an event TODO add reading from FireBase, READ eventCount field so number of events on home will be updated
+/// Updating an event after a user joins or leaves the event
   Future updateEvent(String channelName, String index, int counter, String uid, List<dynamic>userList) async {
     final eventsCollection = channelCollection.document(channelName).collection('Events');
     userList.add(uid);
     return await eventsCollection.document(index).updateData({
-     /* 'address': address,
-      'date': dateTime,
-      'numberOfParticipants': numberOfParticipants,*/
       'counter' : counter,
       'userList': userList,
-     /* 'eventId' : index,
-      'channelName' : channelName,*/
     });
   }
+
+  /// Creating a new event in a specific channel
   Future createEvent(DateTime dateTime, String numberOfParticipants, User creator,String address,String channelName, String index, int counter, String uid, List<dynamic>userList) async {
     final eventsCollection = channelCollection.document(channelName).collection('Events');
     userList.add(uid);

@@ -16,11 +16,6 @@ class HomeManagement extends StatefulWidget {
 
 class _HomeManagementState extends State<HomeManagement> {
   bool showHomeVsGuestManagement =true; // what we prefer to show
-//  void toggleViewShowHomeVsGuestManagement(){ // we will able to use this function from register and sign in if we send it as a parameter.
-//    setState(() {
-//      showHomeVsGuestManagement = !showHomeVsGuestManagement;
-//    });
-//  }
   @override
   Widget build(BuildContext context) {
 

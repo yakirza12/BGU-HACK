@@ -2,7 +2,7 @@
 
 import 'package:socimeet/constants.dart';
 import 'package:socimeet/models/user.dart';
-import 'package:socimeet/screens/events/partyEvent.dart';
+import 'package:socimeet/screens/events/Event.dart';
 import 'package:socimeet/services/auth.dart';
 import 'package:socimeet/screens/home/HomeManagment.dart';
 import 'package:flutter/material.dart';
@@ -411,97 +411,5 @@ class CategoriesScroller extends StatelessWidget {
             ),
           ),
         ));
-  }
-}
-///
-class ChannelCard extends StatelessWidget {
-  const ChannelCard({
-    Key key,
-    this.itemIndex,
-    this.channel,
-    this.press,
-  }) : super(key: key);
-
-  final int itemIndex;
-  final Channel channel;
-  final Function press;
-
-  @override
-  Widget build(BuildContext context) {
-    // It  will provide us total height and width of our screen
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: size.width / 3.4,
-        vertical: 3,
-      ),
-      // color: Colors.blueAccent,
-      height: 50,
-      child: InkWell(
-        onTap: press,
-        child: Stack(
-          alignment: Alignment.bottomLeft,
-          children: <Widget>[
-            // Those are our background
-            Container(
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                color: Colors.blue,
-                boxShadow: [kDefaultShadow],
-              ),
-              child: Container(
-                margin: EdgeInsets.only(right: 0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                ),
-              ),
-            ),
-            // our product image
-            Positioned(
-              left: 0,
-              top: 0,
-              right: 0,
-              child: Hero(
-                tag: '${channel.channelName}',
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 50),
-                  height: 0,
-                  // image is square but we add extra 20 + 20 padding thats why width is 200
-                  width: 50,
-                ),
-              ),
-            ),
-            // Product title and price
-            Positioned(
-              bottom: 0,
-              left: 0,
-              child: SizedBox(
-                height: 50,
-                // our image take 200 width, thats why we set out total width - 200
-                width: size.width - 50,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: kDefaultPadding),
-                      child: Text(
-                        channel.channelName,
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    ),
-                    // it use the available space
-                    Spacer(),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

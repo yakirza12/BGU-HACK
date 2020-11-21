@@ -7,35 +7,25 @@ import 'package:socimeet/models/party.dart';
 import 'package:socimeet/models/user.dart';
 import 'addEventForm.dart';
 
-import '../events/partyEvent.dart';
+import '../events/Event.dart';
 
-
-
-// User moshe= User(emailAddress: 'moshe@peretz.com',first_name: 'moshe',last_name: 'peretz',gender: 'male',uid: '42');
-
+/// Channel screen
 class ChannelWidget extends StatefulWidget {
   User login_user;
   final Channel channel;
 
-  ChannelWidget(this.login_user,this.channel);
-
-  // ignore: non_constant_identifier_names
-  // final User login_user;
-
-  // PartiesChannel(this.login_user);
+  ChannelWidget(this.login_user, this.channel);
 
   @override
   ChannelState createState() => ChannelState();
 }
 
-
 class ChannelState extends State<ChannelWidget> {
-  //uid should be unique and be received from the server
-
+  /// Contains events from firebase based on current channel
   List<Event> _events = [];
 
-
-  Widget cardTemplate(Event eve) {
+  /// Event card
+  Widget EventcardTemplate(Event eve) {
     return Card(
         margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
         child: Padding(
@@ -44,7 +34,6 @@ class ChannelState extends State<ChannelWidget> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Row(
-
                 children: [
                   Text(
                     eve.address,
@@ -55,19 +44,15 @@ class ChannelState extends State<ChannelWidget> {
                   ),
                   FlatButton.icon(
                     onPressed: () {
-                      Navigator.push(context,
+                      Navigator.push(
+                          context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  partyWidget(eve,widget.login_user)
-                          )
-
-                      );
+                                  EventInfoWidget(eve, widget.login_user)));
                     },
                     icon: Icon(Icons.info),
                     label: Text(''),
-
                   )
-
                 ],
               ),
 
@@ -82,13 +67,11 @@ class ChannelState extends State<ChannelWidget> {
               SizedBox(height: 6.0),
               Row(
                 children: [
-                  Text('${eve.date.toString().substring(
-                      0, eve.date.toString().indexOf(' '))}'),
+                  Text(
+                      '${eve.date.toString().substring(0, eve.date.toString().indexOf(' '))}'),
                   SizedBox(width: 50.0),
-                  Text('${eve.date.toString().substring(
-                      eve.date.toString().indexOf(' ') + 1, (eve.date
-                      .toString()
-                      .length - 7))}'),
+                  Text(
+                      '${eve.date.toString().substring(eve.date.toString().indexOf(' ') + 1, (eve.date.toString().length - 7))}'),
                 ],
               ),
 
@@ -96,35 +79,37 @@ class ChannelState extends State<ChannelWidget> {
                 '${eve.counter} / ${eve.numberOfParticipants}',
                 style: TextStyle(
                   fontSize: 14.0,
-                  color: (eve.counter == eve.numberOfParticipants) ? Colors
-                      .red[900]
+                  color: (eve.counter == eve.numberOfParticipants)
+                      ? Colors.red[900]
                       : Colors.greenAccent,
                 ),
               ),
-
-
             ],
           ),
-        )
-    );
+        ));
   }
 
-
+  /// Update _events so it will hold the current events
   void _buildEventsList(BuildContext context, List<DocumentSnapshot> snapshot) {
     _events = snapshot.map((data) {
       final event = Event.fromSnapshot(data);
       return event;
     }).toList();
-    for (int i = 0; i < _events.length; i++) { /* Removes events one day after they are over from the DB */
-      if (_events[i].date.day.compareTo(DateTime.now().day+1) < 0 && _events[i].date.month.compareTo(DateTime.now().month)==0 && _events[i].date.year.compareTo(DateTime.now().year)==0 ) {
-        Firestore.instance.collection('Channels').document(widget.channel.channelName)
-            .collection('Events').document(_events[i].eventId)
+    for (int i = 0; i < _events.length; i++) {
+      /// Removes events one day after they are over from the DB
+      if (_events[i].date.day.compareTo(DateTime.now().day + 1) < 0 &&
+          _events[i].date.month.compareTo(DateTime.now().month) == 0 &&
+          _events[i].date.year.compareTo(DateTime.now().year) == 0) {
+        Firestore.instance
+            .collection('Channels')
+            .document(widget.channel.channelName)
+            .collection('Events')
+            .document(_events[i].eventId)
             .delete();
         _events.remove(i);
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -149,27 +134,18 @@ class ChannelState extends State<ChannelWidget> {
                   centerTitle: true,
                   elevation: 0,
                 ),
-
                 floatingActionButton: FloatingActionButton(
                   onPressed: () {
                     var alertDialog = AlertDialog(
                       title: Text("Add Event"),
-                      content: EventForm(
-                          widget.channel, widget.login_user, _events),
+                      content:
+                          EventForm(widget.channel, widget.login_user, _events),
                     );
                     showDialog(context: context, builder: (_) => alertDialog);
-//         Navigator.push(context,
-//              MaterialPageRoute(builder: (context) => StreamProvider<User>.value(
-//                  value: AuthService().user,
-//                  child: GuestForm()
-//              )
-//              )
-//          );
                   },
                   child: Icon(Icons.add),
                 ),
                 body: Container(
-
                   child: ListView.builder(
                       itemCount: 1,
                       itemBuilder: (context, index) {
@@ -177,11 +153,12 @@ class ChannelState extends State<ChannelWidget> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 1.0, horizontal: 4.0),
                           child: Column(
-                            children:_events.map((eve) => cardTemplate(eve)).toList(),
+                            children: _events
+                                .map((eve) => EventcardTemplate(eve))
+                                .toList(),
                           ),
                         );
-                      }
-                  ),
+                      }),
                 ),
               ),
             );
@@ -189,10 +166,3 @@ class ChannelState extends State<ChannelWidget> {
         });
   }
 }
-
-
-
-
-
-
-

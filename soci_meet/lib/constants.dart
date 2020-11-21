@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-
+/// Constant choice for style
 const kBackgroundColor = Color(0xFFF1EFF1);
 const kPrimaryColor = Color(0xFF035AA6);
 const kSecondaryColor = Color(0xFFFFA41B);

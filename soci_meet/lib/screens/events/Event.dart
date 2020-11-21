@@ -37,11 +37,16 @@ showAlertDialog(BuildContext context,String msg) {
   );
 }
 
-
-class partyWidget extends StatefulWidget {
+/// Info widget
+///
+/// Users can join events which they are not subscribed to
+/// Users can leave events which they are subscribed to
+// ignore: must_be_immutable
+class EventInfoWidget extends StatefulWidget {
   Event myEvent;
+  // ignore: non_constant_identifier_names
   User login_user;
-  partyWidget(Event myEvent,User login_user){
+  EventInfoWidget(Event myEvent,User login_user){
     this.myEvent=myEvent;
     this.login_user = login_user;
   }
@@ -49,8 +54,7 @@ class partyWidget extends StatefulWidget {
   _State createState() => _State(myEvent);
 }
 
-class _State extends State<partyWidget> {
-  @override
+class _State extends State<EventInfoWidget> {
   Event myEvent;
   bool isJoined = false;
   _State(Event myEvent){
@@ -62,7 +66,7 @@ class _State extends State<partyWidget> {
         title: Text('Event'),
         centerTitle: true,
         backgroundColor:Colors.blue[900] ,
-        actions: [creatorDelete(widget.login_user, myEvent)],
+        actions: [userDelete(widget.login_user, myEvent)],
       ),
       body:Card(
         margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
@@ -109,6 +113,9 @@ class _State extends State<partyWidget> {
           ),
         ),
       ),
+      /// Join button
+      ///
+      /// User can join events by using this button
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           for(int i = 0;i<myEvent.userList.length;i++){
@@ -139,15 +146,25 @@ class _State extends State<partyWidget> {
       ),
     );
   }
-  void deleteEventFromMap(User user, String channelName, String eventId){// delete event id from map
+
+  /// delete event id from map
+  // TODO add deleting from all users subscribing to this event, currently only deleting from the event creator.
+  void deleteEventFromMap(User user, String channelName, String eventId){
     user.userEventsIdMap.forEach((key, value) {
       if(value.contains(eventId)){
         value.remove(eventId);
-       return;
+        return;
       }
     });
   }
-  Widget creatorDelete(User user,Event event){
+
+  /// Event deletion \ leaving
+  ///
+  /// If you are the creator the event is deleted
+  /// If you are a user subscribing you will leave this event.
+  // TODO add warning about deleting\unsubscribe so a user can confirm his decision
+  Widget userDelete(User user,Event event){
+    // If I am the creator, delete the event
     if(user.uid == event.creator_id ) {
      return FlatButton.icon(
           icon: Icon(Icons.delete),
@@ -166,6 +183,8 @@ class _State extends State<partyWidget> {
           },
          label: Text(""));
     }
+    // TODO add here that a user can leave an event using this button.
+    else{}
       return FlatButton.icon(icon: Icon(Icons.delete),label: Text(""),);
   }
 }
