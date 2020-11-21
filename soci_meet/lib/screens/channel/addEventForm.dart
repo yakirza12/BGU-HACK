@@ -40,7 +40,7 @@ class _EventFormState extends State<EventForm> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   DateTime date;
-  String numberOfParticipantes;
+  String numberOfParticipants;
   User creator;
   int counter=1; //how many registered
   String address;
