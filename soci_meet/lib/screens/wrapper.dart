@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../services/auth.dart';
 import 'autenticates/autenticate.dart';
 
-
+/// Choose between sign up and sign in pages
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context)   {

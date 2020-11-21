@@ -15,14 +15,11 @@ import 'package:provider/provider.dart';
 import '../../models/chanel.dart';
 import '../channel/channel.dart';
 
-class Home extends StatefulWidget {
-  // he made is stateless but im want it in differ because its will be my menu
+/// HomePage of the app,here you can roam between channels
 
+class Home extends StatefulWidget {
   // ignore: non_constant_identifier_names
   final User login_user;
-
-  // User({this.uid,this.emailAddress,this.first_name,this.last_name,this.gender})
-  // Event({this.date, this.numberOfParticipantes, this.address, this.creator});
 
   const Home(this.login_user);
 
@@ -41,26 +38,24 @@ class _HomeState extends State<Home> {
 
   final AuthService _auth = AuthService();
 
-  static List<Event> userEventsList = [
-    // Event(date: DateTime(2020, 9, 14, 17, 30),numberOfParticipants: 50,address: "Rager 155, be'er-Sheva",creator: moshe ),
-    // Event(date: DateTime(2020, 9, 15, 22, 30),numberOfParticipants: 10,address: "Kadesh 12, be'er-Sheva",creator: moshe ),
-    // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
-    // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
-    // Event(date: DateTime(2020, 9, 16, 10, 30),numberOfParticipants: 25,address: "Ben-Matityahu 42, be'er-Sheva",creator: moshe ),
-  ];
+  /// userEventList contains the events which the user is currently subscribed to
+  static List<Event> userEventsList = [];
 
+  /// uList is a map. key = channelName, value = list of subscribed users
   static Map<String, User> ulist = {};
 
-  /*A list of users which subscribes to a channel mapped by the channel name */
-
+  /// Hardcoded channels
   static Channel parties =
-  Channel(channelName: "Parties", users: ulist, events: userEventsList);
+      Channel(channelName: "Parties", users: ulist, events: userEventsList);
   static Channel shabatDinner = Channel(
       channelName: "Shabat Dinner", users: ulist, events: userEventsList);
   static Channel sport =
-  Channel(channelName: "Sport Games", users: ulist, events: userEventsList);
+      Channel(channelName: "Sport Games", users: ulist, events: userEventsList);
   static List<Channel> arrayChannels = [parties, shabatDinner, sport];
 
+  /// _buildEventsList is used to get the events from firebase
+  ///
+  ///  Here userEventsList will be filled accordingly
   void _buildEventsList(BuildContext context, List<DocumentSnapshot> snapshot,
       User user, String channelName) {
     userEventsList.addAll(snapshot.map((data) {
@@ -68,10 +63,12 @@ class _HomeState extends State<Home> {
       print("this is event " + event.toString());
       return event;
     }).toList());
-    print("\n\n\nThis is the userEvent list len\n" + userEventsList.length.toString());
+    print("\n\n\nThis is the userEvent list len\n" +
+        userEventsList.length.toString());
     for (int i = 0; i < userEventsList.length; i++) {
-      if (user.userEventsIdList[channelName] != null && !user.userEventsIdList[channelName]
-          .contains(userEventsList[i].eventId)) {
+      if (user.userEventsIdList[channelName] != null &&
+          !user.userEventsIdList[channelName]
+              .contains(userEventsList[i].eventId)) {
         userEventsList.remove(userEventsList[i]);
         i--;
       }
@@ -80,9 +77,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery
-        .of(context)
-        .size;
+    final Size size = MediaQuery.of(context).size;
     final double channelHeight = size.height * 0.30;
     User _user = widget.login_user;
     return StreamBuilder<DocumentSnapshot>(
@@ -102,16 +97,14 @@ class _HomeState extends State<Home> {
                 elevation: 0,
                 title: Text(
                   "SociMeet",
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .display1,
+                  style: Theme.of(context).textTheme.display1,
                 ),
                 actions: <Widget>[
                   FlatButton.icon(
                       onPressed: () async {
-                        await _auth
-                            .signOut(); // its will set the prividers user to null and wee take as back to the login home page
+                        await _auth.signOut();
+
+                        /// This will set the providers user to null and we'll take as back to the login home page
                       },
                       icon: Icon(Icons.person),
                       label: Text("Out")),
@@ -159,6 +152,8 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Expanded(
+                      /// Here the userEventsList will be printed as a card to the screen
+                      // TODO needs to be deleted and modified so we won't need to hardcode the channels name and so we won't need to use an expended widget per channel
                       child: StreamBuilder<QuerySnapshot>(
                           stream: Firestore.instance
                               .collection('Channels')
@@ -171,9 +166,8 @@ class _HomeState extends State<Home> {
                             else {
                               print(
                                   "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-                              _buildEventsList(
-                                  context, snapshot.data.documents, _user,
-                                  'Parties');
+                              _buildEventsList(context, snapshot.data.documents,
+                                  _user, 'Parties');
                               return ListView.builder(
                                   controller: controller,
                                   itemCount: userEventsList.length,
@@ -204,9 +198,7 @@ class _HomeState extends State<Home> {
                                         ));
                                   });
                             }
-                          }
-
-                      ),
+                          }),
                     ),
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
@@ -221,9 +213,8 @@ class _HomeState extends State<Home> {
                             else {
                               print(
                                   "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-                              _buildEventsList(
-                                  context, snapshot.data.documents, _user,
-                                  'Parties');
+                              _buildEventsList(context, snapshot.data.documents,
+                                  _user, 'Parties');
                               return ListView.builder(
                                   controller: controller,
                                   itemCount: userEventsList.length,
@@ -254,9 +245,7 @@ class _HomeState extends State<Home> {
                                         ));
                                   });
                             }
-                          }
-
-                      ),
+                          }),
                     ),
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
@@ -271,9 +260,8 @@ class _HomeState extends State<Home> {
                             else {
                               print(
                                   "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-                              _buildEventsList(
-                                  context, snapshot.data.documents, _user,
-                                  'Shabat Dinner');
+                              _buildEventsList(context, snapshot.data.documents,
+                                  _user, 'Shabat Dinner');
                               return ListView.builder(
                                   controller: controller,
                                   itemCount: userEventsList.length,
@@ -304,9 +292,7 @@ class _HomeState extends State<Home> {
                                         ));
                                   });
                             }
-                          }
-
-                      ),
+                          }),
                     ),
                   ],
                 ),
@@ -315,62 +301,12 @@ class _HomeState extends State<Home> {
           }
         });
   }
-
-// createUserEventList(BuildContext context, User user,
-//     List<Channel> arrayChannels) {
-//   for (int i = 0; i < arrayChannels.length; i++) {
-//     updateUserEventList(context, arrayChannels[i], user);
-//   }
-//   return ListView.builder(
-//       controller: controller,
-//       itemCount: userEventsList.length,
-//       padding: EdgeInsets.only(top: 0, bottom: 0),
-//       physics: BouncingScrollPhysics(),
-//       itemBuilder: (context, index) {
-//         double scale = 1.0;
-//         if (topContainer > 0.5) {
-//           scale = index + 0.5 - topContainer;
-//           if (scale < 0) {
-//             scale = 0;
-//           } else if (scale > 1) {
-//             scale = 1;
-//           }
-//         }
-//         return Opacity(
-//             opacity: scale,
-//             child: Transform(
-//               transform: Matrix4.identity()
-//                 ..scale(scale, scale),
-//               alignment: Alignment.bottomCenter,
-//               child: Align(
-//                 heightFactor: 0.7,
-//                 alignment: Alignment.topCenter,
-//                 child: ChannelState().cardTemplate(userEventsList[index]),
-//               ),
-//             ));
-//       });
-// }
-//
-// Widget updateUserEventList(BuildContext context, Channel c, User user) {
-//   return StreamBuilder<QuerySnapshot>(
-//       stream: Firestore.instance
-//           .collection('Channels')
-//           .document(c.channelName)
-//           .collection('Events')
-//           .snapshots(),
-//       builder: (context, snapshot) {
-//         if (!snapshot.hasData)
-//           return LinearProgressIndicator();
-//         else {
-//           print("\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-//           _buildEventsList(
-//               context, snapshot.data.documents, user, c.channelName);
-//           return Text("Could  get data");
-//         }
-//       });
-// }
 }
 
+/// Our channels in a scroller format
+///
+/// login_user holds our current user
+/// arrayChannels holds all of our existing channels
 class CategoriesScroller extends StatelessWidget {
   final User login_user;
   final List<Channel> arrayChannels;
@@ -380,10 +316,7 @@ class CategoriesScroller extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double categoryHeight =
-        MediaQuery
-            .of(context)
-            .size
-            .height * 0.30 - 50;
+        MediaQuery.of(context).size.height * 0.30 - 50;
     return SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
@@ -395,13 +328,13 @@ class CategoriesScroller extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 GestureDetector(
-                  onTap: () =>
-                  {
+                  onTap: () => {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChannelWidget(login_user, arrayChannels[0])))
+                                ChannelWidget(login_user, arrayChannels[0]))) /// Creates our channel Widget
+                    // TODO need to change it so we won't hardcode the index of the arrayChannels
                   },
                   child: Container(
                     width: 150,
@@ -427,7 +360,7 @@ class CategoriesScroller extends StatelessWidget {
                           ),
                           Text(
                             arrayChannels[0].events.length.toString() +
-                                " Available Events",
+                                " Available Events", // TODO add counter to count existing events in this channel
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],
@@ -436,13 +369,13 @@ class CategoriesScroller extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () =>
-                  {
+                  onTap: () => {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
                                 ChannelWidget(login_user, arrayChannels[1])))
+                    // TODO need to change it so we won't hardcode the index of the arrayChannels
                   },
                   child: Container(
                     width: 150,
@@ -469,9 +402,9 @@ class CategoriesScroller extends StatelessWidget {
                             ),
                             Text(
                               arrayChannels[1].events.length.toString() +
-                                  " Available Events",
+                                  " Available Events", //TODO add counter to count existing events in channel
                               style:
-                              TextStyle(fontSize: 16, color: Colors.white),
+                                  TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ],
                         ),
@@ -480,13 +413,14 @@ class CategoriesScroller extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () =>
-                  {
+                  onTap: () => {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
                                 ChannelWidget(login_user, arrayChannels[2])))
+                    // TODO need to change it so we won't hardcode the index of the arrayChannels
+
                   },
                   child: Container(
                     width: 150,
@@ -512,7 +446,7 @@ class CategoriesScroller extends StatelessWidget {
                           ),
                           Text(
                             arrayChannels[2].events.length.toString() +
-                                " Available Events",
+                                " Available Events", //TODO add counter to count existing events in channel
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],
@@ -526,10 +460,8 @@ class CategoriesScroller extends StatelessWidget {
         ));
   }
 }
-
+///
 class ChannelCard extends StatelessWidget {
-  // list of colors that we use in our app
-
   const ChannelCard({
     Key key,
     this.itemIndex,
@@ -544,9 +476,7 @@ class ChannelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // It  will provide us total height and width of our screen
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: size.width / 3.4,
@@ -607,10 +537,7 @@ class ChannelCard extends StatelessWidget {
                           horizontal: kDefaultPadding),
                       child: Text(
                         channel.channelName,
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .button,
+                        style: Theme.of(context).textTheme.button,
                       ),
                     ),
                     // it use the available space
