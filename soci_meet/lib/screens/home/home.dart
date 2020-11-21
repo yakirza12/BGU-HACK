@@ -311,7 +311,7 @@ class CategoriesScroller extends StatelessWidget {
   final User login_user;
   final List<Channel> arrayChannels;
 
-  const CategoriesScroller(this.login_user, this.arrayChannels);
+  const CategoriesScroller(this.login_user,this.arrayChannels);
 
   @override
   Widget build(BuildContext context) {

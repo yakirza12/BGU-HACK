@@ -7,7 +7,7 @@ class User{ // the user object, need to be expandent in the future
   final String first_name;
   final String last_name;
   final String gender;
-  Map <String,dynamic> userEventsIdList;//TODO this should be Map<String,String> but it is not working otherwise
+  Map <String,dynamic> userEventsIdMap;//TODO this should be Map<String,String> but it is not working otherwise
   final DocumentReference reference;
 
 
@@ -24,7 +24,7 @@ class User{ // the user object, need to be expandent in the future
         first_name = map['first_name'],
         last_name = map['last_name'],
         gender = map['gender'],
-        userEventsIdList = map['userEventsIdList'];
+        userEventsIdMap = map['userEventsIdList'];
 
 
   User.fromSnapshot(DocumentSnapshot snapshot,String user_uid) :

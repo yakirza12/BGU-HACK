@@ -5,7 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/models/user.dart';
+import 'package:socimeet/screens/channel/addEventForm.dart';
+import 'package:socimeet/screens/channel/addEventForm.dart';
 import 'package:socimeet/services/channelsDB.dart';
+import 'package:socimeet/services/userDatabase.dart';
 
 showAlertDialog(BuildContext context,String msg) {
 
@@ -59,7 +62,7 @@ class _State extends State<partyWidget> {
         title: Text('Event'),
         centerTitle: true,
         backgroundColor:Colors.blue[900] ,
-        actions: [creatorDelete(widget.login_user.uid, myEvent)],
+        actions: [creatorDelete(widget.login_user, myEvent)],
       ),
       body:Card(
         margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
@@ -117,7 +120,9 @@ class _State extends State<partyWidget> {
             if(myEvent.counter < int.parse(myEvent.numberOfParticipants)){
               setState(() {
                 myEvent.counter++;
+                EventForm(null,null,null).updateUserEventsIdMap(widget.login_user, myEvent.channelName, myEvent.eventId); //add to event id map
                 ChannelsDatabaseServices().updateEvent(myEvent.date, myEvent.numberOfParticipants, widget.login_user, myEvent.address, myEvent.channelName, myEvent.eventId, myEvent.counter, widget.login_user.uid,myEvent.userList);
+                UserDatabaseService().updateUserEvents(widget.login_user); //update in database the event id map
               });
               isJoined=true;
             }
@@ -133,11 +138,26 @@ class _State extends State<partyWidget> {
       ),
     );
   }
-  Widget creatorDelete(String userUid,Event event){
-    if(userUid == event.creator_id ) {
+  void deleteEventFromMap(User user, String channelName, String eventId){// delete event id from map
+    user.userEventsIdMap.forEach((key, value) {
+      if(value.contains(eventId)){
+        value.remove(eventId);
+       return;
+      }
+    });
+  }
+  Widget creatorDelete(User user,Event event){
+    if(user.uid == event.creator_id ) {
      return FlatButton.icon(
           icon: Icon(Icons.delete),
           onPressed: () async {
+            event.userList.map((uid){ //for each user in this event, delete the event id from its map in the database
+              Future<User> user =Firestore.instance.collection('users').document(uid).get().then((doc) =>User.fromSnapshot(doc, uid));
+              user.then((userFuture)=>deleteEventFromMap(userFuture, event.channelName, event.eventId));
+              user.then((userFuture)=> UserDatabaseService().updateUserEvents(userFuture));
+            });
+            deleteEventFromMap(user, event.channelName, event.eventId);
+            UserDatabaseService().updateUserEvents(user);
             Firestore.instance.collection('Channels').document(event.channelName)
                 .collection('Events').document(event.eventId)
                 .delete();
