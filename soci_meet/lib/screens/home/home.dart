@@ -66,8 +66,8 @@ class _HomeState extends State<Home> {
     print("\n\n\nThis is the userEvent list len\n" +
         userEventsList.length.toString());
     for (int i = 0; i < userEventsList.length; i++) {
-      if (user.userEventsIdList[channelName] != null &&
-          !user.userEventsIdList[channelName]
+      if (user.userEventsIdMap[channelName] != null &&
+          !user.userEventsIdMap[channelName]
               .contains(userEventsList[i].eventId)) {
         userEventsList.remove(userEventsList[i]);
         i--;
@@ -151,149 +151,101 @@ class _HomeState extends State<Home> {
                         child: CategoriesScroller(_user, arrayChannels),
                       ),
                     ),
-                    Expanded(
-                      /// Here the userEventsList will be printed as a card to the screen
-                      // TODO needs to be deleted and modified so we won't need to hardcode the channels name and so we won't need to use an expended widget per channel
-                      child: StreamBuilder<QuerySnapshot>(
-                          stream: Firestore.instance
-                              .collection('Channels')
-                              .document('Parties')
-                              .collection('Events')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData)
-                              return LinearProgressIndicator();
-                            else {
-                              print(
-                                  "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-                              _buildEventsList(context, snapshot.data.documents,
-                                  _user, 'Parties');
-                              return ListView.builder(
-                                  controller: controller,
-                                  itemCount: userEventsList.length,
-                                  padding: EdgeInsets.only(top: 0, bottom: 0),
-                                  physics: BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    double scale = 1.0;
-                                    if (topContainer > 0.5) {
-                                      scale = index + 0.5 - topContainer;
-                                      if (scale < 0) {
-                                        scale = 0;
-                                      } else if (scale > 1) {
-                                        scale = 1;
-                                      }
-                                    }
-                                    return Opacity(
-                                        opacity: scale,
-                                        child: Transform(
-                                          transform: Matrix4.identity()
-                                            ..scale(scale, scale),
-                                          alignment: Alignment.bottomCenter,
-                                          child: Align(
-                                            heightFactor: 0.7,
-                                            alignment: Alignment.topCenter,
-                                            child: ChannelState().cardTemplate(
-                                                userEventsList[index]),
-                                          ),
-                                        ));
-                                  });
-                            }
-                          }),
-                    ),
-                    Expanded(
-                      child: StreamBuilder<QuerySnapshot>(
-                          stream: Firestore.instance
-                              .collection('Channels')
-                              .document('Parties')
-                              .collection('Events')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData)
-                              return LinearProgressIndicator();
-                            else {
-                              print(
-                                  "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-                              _buildEventsList(context, snapshot.data.documents,
-                                  _user, 'Parties');
-                              return ListView.builder(
-                                  controller: controller,
-                                  itemCount: userEventsList.length,
-                                  padding: EdgeInsets.only(top: 0, bottom: 0),
-                                  physics: BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    double scale = 1.0;
-                                    if (topContainer > 0.5) {
-                                      scale = index + 0.5 - topContainer;
-                                      if (scale < 0) {
-                                        scale = 0;
-                                      } else if (scale > 1) {
-                                        scale = 1;
-                                      }
-                                    }
-                                    return Opacity(
-                                        opacity: scale,
-                                        child: Transform(
-                                          transform: Matrix4.identity()
-                                            ..scale(scale, scale),
-                                          alignment: Alignment.bottomCenter,
-                                          child: Align(
-                                            heightFactor: 0.7,
-                                            alignment: Alignment.topCenter,
-                                            child: ChannelState().cardTemplate(
-                                                userEventsList[index]),
-                                          ),
-                                        ));
-                                  });
-                            }
-                          }),
-                    ),
-                    Expanded(
-                      child: StreamBuilder<QuerySnapshot>(
-                          stream: Firestore.instance
-                              .collection('Channels')
-                              .document('Sport Games')
-                              .collection('Events')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData)
-                              return LinearProgressIndicator();
-                            else {
-                              print(
-                                  "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-                              _buildEventsList(context, snapshot.data.documents,
-                                  _user, 'Shabat Dinner');
-                              return ListView.builder(
-                                  controller: controller,
-                                  itemCount: userEventsList.length,
-                                  padding: EdgeInsets.only(top: 0, bottom: 0),
-                                  physics: BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    double scale = 1.0;
-                                    if (topContainer > 0.5) {
-                                      scale = index + 0.5 - topContainer;
-                                      if (scale < 0) {
-                                        scale = 0;
-                                      } else if (scale > 1) {
-                                        scale = 1;
-                                      }
-                                    }
-                                    return Opacity(
-                                        opacity: scale,
-                                        child: Transform(
-                                          transform: Matrix4.identity()
-                                            ..scale(scale, scale),
-                                          alignment: Alignment.bottomCenter,
-                                          child: Align(
-                                            heightFactor: 0.7,
-                                            alignment: Alignment.topCenter,
-                                            child: ChannelState().cardTemplate(
-                                                userEventsList[index]),
-                                          ),
-                                        ));
-                                  });
-                            }
-                          }),
-                    ),
+                      // TODO needs to be deleted and modified so we won't need to hardcode the channels name and so we won't need to use an expended widget per channel),
+                    // Expanded(
+                    //   child: StreamBuilder<QuerySnapshot>(
+                    //       stream: Firestore.instance
+                    //           .collection('Channels')
+                    //           .document('Parties')
+                    //           .collection('Events')
+                    //           .snapshots(),
+                    //       builder: (context, snapshot) {
+                    //         if (!snapshot.hasData)
+                    //           return LinearProgressIndicator();
+                    //         else {
+                    //           print(
+                    //               "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
+                    //           _buildEventsList(context, snapshot.data.documents,
+                    //               _user, 'Parties');
+                    //           return ListView.builder(
+                    //               controller: controller,
+                    //               itemCount: userEventsList.length,
+                    //               padding: EdgeInsets.only(top: 0, bottom: 0),
+                    //               physics: BouncingScrollPhysics(),
+                    //               itemBuilder: (context, index) {
+                    //                 double scale = 1.0;
+                    //                 if (topContainer > 0.5) {
+                    //                   scale = index + 0.5 - topContainer;
+                    //                   if (scale < 0) {
+                    //                     scale = 0;
+                    //                   } else if (scale > 1) {
+                    //                     scale = 1;
+                    //                   }
+                    //                 }
+                    //                 return Opacity(
+                    //                     opacity: scale,
+                    //                     child: Transform(
+                    //                       transform: Matrix4.identity()
+                    //                         ..scale(scale, scale),
+                    //                       alignment: Alignment.bottomCenter,
+                    //                       child: Align(
+                    //                         heightFactor: 0.7,
+                    //                         alignment: Alignment.topCenter,
+                    //                         child: ChannelState().cardTemplate(
+                    //                             userEventsList[index]),
+                    //                       ),
+                    //                     ));
+                    //               });
+                    //         }
+                    //       }),
+                    // ),
+                    // Expanded(
+                    //   child: StreamBuilder<QuerySnapshot>(
+                    //       stream: Firestore.instance
+                    //           .collection('Channels')
+                    //           .document('Sport Games')
+                    //           .collection('Events')
+                    //           .snapshots(),
+                    //       builder: (context, snapshot) {
+                    //         if (!snapshot.hasData)
+                    //           return LinearProgressIndicator();
+                    //         else {
+                    //           print(
+                    //               "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
+                    //           _buildEventsList(context, snapshot.data.documents,
+                    //               _user, 'Shabat Dinner');
+                    //           return ListView.builder(
+                    //               controller: controller,
+                    //               itemCount: userEventsList.length,
+                    //               padding: EdgeInsets.only(top: 0, bottom: 0),
+                    //               physics: BouncingScrollPhysics(),
+                    //               itemBuilder: (context, index) {
+                    //                 double scale = 1.0;
+                    //                 if (topContainer > 0.5) {
+                    //                   scale = index + 0.5 - topContainer;
+                    //                   if (scale < 0) {
+                    //                     scale = 0;
+                    //                   } else if (scale > 1) {
+                    //                     scale = 1;
+                    //                   }
+                    //                 }
+                    //                 return Opacity(
+                    //                     opacity: scale,
+                    //                     child: Transform(
+                    //                       transform: Matrix4.identity()
+                    //                         ..scale(scale, scale),
+                    //                       alignment: Alignment.bottomCenter,
+                    //                       child: Align(
+                    //                         heightFactor: 0.7,
+                    //                         alignment: Alignment.topCenter,
+                    //                         child: ChannelState().cardTemplate(
+                    //                             userEventsList[index]),
+                    //                       ),
+                    //                     ));
+                    //               });
+                    //         }
+                    //       }),
+                    // ),
                   ],
                 ),
               ),
