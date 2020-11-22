@@ -3,6 +3,7 @@
 import 'package:socimeet/constants.dart';
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/screens/events/Event.dart';
+import 'package:socimeet/screens/events/myEventsWidget.dart';
 import 'package:socimeet/services/auth.dart';
 import 'package:socimeet/screens/home/HomeManagment.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +39,6 @@ class _HomeState extends State<Home> {
 
   final AuthService _auth = AuthService();
 
-  /// userEventList contains the events which the user is currently subscribed to
-  static List<Event> userEventsList = [];
-
   /// uList is a map. key = channelName, value = list of subscribed users
   static Map<String, User> ulist = {};
 
@@ -53,27 +51,8 @@ class _HomeState extends State<Home> {
       Channel(channelName: "Sport Games", users: ulist, events: userEventsList);
   static List<Channel> arrayChannels = [parties, shabatDinner, sport];
 
-  /// _buildEventsList is used to get the events from firebase
-  ///
-  ///  Here userEventsList will be filled accordingly
-  void _buildEventsList(BuildContext context, List<DocumentSnapshot> snapshot,
-      User user, String channelName) {
-    userEventsList.addAll(snapshot.map((data) {
-      final Event event = Event.fromSnapshot(data);
-      print("this is event " + event.toString());
-      return event;
-    }).toList());
-    print("\n\n\nThis is the userEvent list len\n" +
-        userEventsList.length.toString());
-    for (int i = 0; i < userEventsList.length; i++) {
-      if (user.userEventsIdMap[channelName] != null &&
-          !user.userEventsIdMap[channelName]
-              .contains(userEventsList[i].eventId)) {
-        userEventsList.remove(userEventsList[i]);
-        i--;
-      }
-    }
-  }
+  /// userEventList contains the events which the user is currently subscribed to
+  static List<Event> userEventsList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +89,8 @@ class _HomeState extends State<Home> {
                       label: Text("Out")),
                 ],
               ),
-              body: Container(
+              body:
+              Container(
                 height: size.height,
                 decoration: BoxDecoration(
                   color: Color(0xFFFFCCBF),
@@ -126,13 +106,24 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Welcome "+ _user.first_name+"!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40),
+                    ),
+                    SizedBox(
                       height: 10,
                     ),
                     Text(
                       "     Channels",
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                          color: Colors.grey,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 20),
                     ),
@@ -148,105 +139,34 @@ class _HomeState extends State<Home> {
                         width: size.width,
                         alignment: Alignment.topCenter,
                         height: channelHeight,
-                        child: CategoriesScroller(_user, arrayChannels),
+                        child: ChannelsCategoriesScroller(_user, arrayChannels),
                       ),
                     ),
-                      /// Here the userEventsList will be printed as a card to the screen
-                      // TODO needs to be deleted and modified so we won't need to hardcode the channels name and so we won't need to use an expended widget per channel),
-                    // Expanded(
-                    //   child: StreamBuilder<QuerySnapshot>(
-                    //       stream: Firestore.instance
-                    //           .collection('Channels')
-                    //           .document('Parties')
-                    //           .collection('Events')
-                    //           .snapshots(),
-                    //       builder: (context, snapshot) {
-                    //         if (!snapshot.hasData)
-                    //           return LinearProgressIndicator();
-                    //         else {
-                    //           print(
-                    //               "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-                    //           _buildEventsList(context, snapshot.data.documents,
-                    //               _user, 'Parties');
-                    //           return ListView.builder(
-                    //               controller: controller,
-                    //               itemCount: userEventsList.length,
-                    //               padding: EdgeInsets.only(top: 0, bottom: 0),
-                    //               physics: BouncingScrollPhysics(),
-                    //               itemBuilder: (context, index) {
-                    //                 double scale = 1.0;
-                    //                 if (topContainer > 0.5) {
-                    //                   scale = index + 0.5 - topContainer;
-                    //                   if (scale < 0) {
-                    //                     scale = 0;
-                    //                   } else if (scale > 1) {
-                    //                     scale = 1;
-                    //                   }
-                    //                 }
-                    //                 return Opacity(
-                    //                     opacity: scale,
-                    //                     child: Transform(
-                    //                       transform: Matrix4.identity()
-                    //                         ..scale(scale, scale),
-                    //                       alignment: Alignment.bottomCenter,
-                    //                       child: Align(
-                    //                         heightFactor: 0.7,
-                    //                         alignment: Alignment.topCenter,
-                    //                         child: ChannelState().cardTemplate(
-                    //                             userEventsList[index]),
-                    //                       ),
-                    //                     ));
-                    //               });
-                    //         }
-                    //       }),
-                    // ),
-                    // Expanded(
-                    //   child: StreamBuilder<QuerySnapshot>(
-                    //       stream: Firestore.instance
-                    //           .collection('Channels')
-                    //           .document('Sport Games')
-                    //           .collection('Events')
-                    //           .snapshots(),
-                    //       builder: (context, snapshot) {
-                    //         if (!snapshot.hasData)
-                    //           return LinearProgressIndicator();
-                    //         else {
-                    //           print(
-                    //               "\n\n\nI AM UPDATING THE USER EVENT LIST\n\n\n");
-                    //           _buildEventsList(context, snapshot.data.documents,
-                    //               _user, 'Shabat Dinner');
-                    //           return ListView.builder(
-                    //               controller: controller,
-                    //               itemCount: userEventsList.length,
-                    //               padding: EdgeInsets.only(top: 0, bottom: 0),
-                    //               physics: BouncingScrollPhysics(),
-                    //               itemBuilder: (context, index) {
-                    //                 double scale = 1.0;
-                    //                 if (topContainer > 0.5) {
-                    //                   scale = index + 0.5 - topContainer;
-                    //                   if (scale < 0) {
-                    //                     scale = 0;
-                    //                   } else if (scale > 1) {
-                    //                     scale = 1;
-                    //                   }
-                    //                 }
-                    //                 return Opacity(
-                    //                     opacity: scale,
-                    //                     child: Transform(
-                    //                       transform: Matrix4.identity()
-                    //                         ..scale(scale, scale),
-                    //                       alignment: Alignment.bottomCenter,
-                    //                       child: Align(
-                    //                         heightFactor: 0.7,
-                    //                         alignment: Alignment.topCenter,
-                    //                         child: ChannelState().cardTemplate(
-                    //                             userEventsList[index]),
-                    //                       ),
-                    //                     ));
-                    //               });
-                    //         }
-                    //       }),
-                    // ),
+                    SizedBox(
+                      height: 100,
+                    ),
+                    Text(
+                      "     My Events",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                    Flexible(
+                      child:AnimatedOpacity(
+                        duration: const Duration(milliseconds: 200),
+                        opacity: 0.8,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: size.width,
+                          alignment: Alignment.topCenter,
+                          height: channelHeight,
+                          child: UserEventsCategoriesScroller(_user, arrayChannels),
+                        ),
+                      ),
+                        flex: 5
+                    )
                   ],
                 ),
               ),
@@ -260,11 +180,11 @@ class _HomeState extends State<Home> {
 ///
 /// login_user holds our current user
 /// arrayChannels holds all of our existing channels
-class CategoriesScroller extends StatelessWidget {
+class ChannelsCategoriesScroller extends StatelessWidget {
   final User login_user;
   final List<Channel> arrayChannels;
 
-  const CategoriesScroller(this.login_user,this.arrayChannels);
+  const ChannelsCategoriesScroller(this.login_user, this.arrayChannels);
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +206,9 @@ class CategoriesScroller extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChannelWidget(login_user, arrayChannels[0]))) /// Creates our channel Widget
+                                ChannelWidget(login_user, arrayChannels[0])))
+
+                    /// Creates our channel Widget
                     // TODO need to change it so we won't hardcode the index of the arrayChannels
                   },
                   child: Container(
@@ -294,7 +216,7 @@ class CategoriesScroller extends StatelessWidget {
                     margin: EdgeInsets.only(right: 20),
                     height: categoryHeight,
                     decoration: BoxDecoration(
-                        color: Colors.orange.shade400,
+                        color: Colors.orange[600],
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -313,7 +235,8 @@ class CategoriesScroller extends StatelessWidget {
                           ),
                           Text(
                             arrayChannels[0].events.length.toString() +
-                                " Available Events", // TODO add counter to count existing events in this channel
+                                " Available Events",
+                            // TODO add counter to count existing events in this channel
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],
@@ -335,7 +258,7 @@ class CategoriesScroller extends StatelessWidget {
                     margin: EdgeInsets.only(right: 20),
                     height: categoryHeight,
                     decoration: BoxDecoration(
-                        color: Colors.blue.shade400,
+                        color: Colors.blue.shade600,
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),
                     child: Container(
                       child: Padding(
@@ -355,7 +278,8 @@ class CategoriesScroller extends StatelessWidget {
                             ),
                             Text(
                               arrayChannels[1].events.length.toString() +
-                                  " Available Events", //TODO add counter to count existing events in channel
+                                  " Available Events",
+                              //TODO add counter to count existing events in channel
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
@@ -373,14 +297,13 @@ class CategoriesScroller extends StatelessWidget {
                             builder: (context) =>
                                 ChannelWidget(login_user, arrayChannels[2])))
                     // TODO need to change it so we won't hardcode the index of the arrayChannels
-
                   },
                   child: Container(
                     width: 150,
                     margin: EdgeInsets.only(right: 20),
                     height: categoryHeight,
                     decoration: BoxDecoration(
-                        color: Colors.pink.shade400,
+                        color: Colors.pink.shade600,
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -399,7 +322,8 @@ class CategoriesScroller extends StatelessWidget {
                           ),
                           Text(
                             arrayChannels[2].events.length.toString() +
-                                " Available Events", //TODO add counter to count existing events in channel
+                                " Available Events",
+                            //TODO add counter to count existing events in channel
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],
@@ -412,4 +336,190 @@ class CategoriesScroller extends StatelessWidget {
           ),
         ));
   }
+}
+
+/// CategoriesScroller to choose from which channel we will display the events on the home screen
+class UserEventsCategoriesScroller extends StatelessWidget {
+  final User login_user;
+  final List<Channel> arrayChannels;
+  ScrollController controller = ScrollController();
+  bool closeTopContainer = false;
+  double topContainer = 0;
+
+  /// userEventList contains the events which the user is currently subscribed to
+  static List<Event> userEventsList = [];
+
+  UserEventsCategoriesScroller(this.login_user, this.arrayChannels);
+
+  @override
+  Widget build(BuildContext context) {
+    final double categoryHeight =
+        MediaQuery.of(context).size.height * 0.30 ;
+    final double categoryWidth = MediaQuery.of(context).size.width * 0.30 ;
+    return SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          child: FittedBox(
+            fit: BoxFit.fill,
+            alignment: Alignment.topCenter,
+            child: Row(
+              children: <Widget>[
+                GestureDetector(
+                    onTap: () => {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => myEventsWidget(
+                                      login_user, arrayChannels[0]))
+
+                              /// Creates the events card which our user subscribes to
+                              // TODO need to change it so we won't hardcode the index of the arrayChannels
+                              )
+                        },
+                    child: Container(
+                      width: categoryWidth,
+                      margin: EdgeInsets.only(right: 20),
+                      height: categoryHeight-100,
+                      decoration: BoxDecoration(
+                          color: Colors.orange[400],
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              ///Box name
+                              "My "+arrayChannels[0].channelName,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+                GestureDetector(
+                    onTap: () => {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => myEventsWidget(
+                        login_user, arrayChannels[1])))
+                          // TODO need to change it so we won't hardcode the index of the arrayChannels
+                        },
+                    child: Container(
+                      width: categoryWidth,
+                      margin: EdgeInsets.only(right: 20),
+                      height: categoryHeight - 100,
+                      decoration: BoxDecoration(
+                          color: Colors.blue.shade400,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              ///Box name
+                              "My "+arrayChannels[1].channelName,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+                GestureDetector(
+                    onTap: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => myEventsWidget(
+                                  login_user, arrayChannels[2])))
+                          // TODO need to change it so we won't hardcode the index of the arrayChannels
+                        },
+                    child: Container(
+                      width: categoryWidth,
+                      margin: EdgeInsets.only(right: 20),
+                      height: categoryHeight-100,
+                      decoration: BoxDecoration(
+                          color: Colors.pink.shade400,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              ///Box name
+                              "My "+arrayChannels[2].channelName,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          ),
+        ));
+  }
+
+//   /// Creates the card that displays events which the user subscribed to per channel
+//   Widget createUserEventCard(double categoryHeight, String channelName) {
+//     return StreamBuilder<QuerySnapshot>(
+//         stream: Firestore.instance
+//             .collection('Channels')
+//             .document(channelName)
+//             .collection('Events')
+//             .snapshots(),
+//         builder: (context, snapshot) {
+//           if (!snapshot.hasData) {
+//             return LinearProgressIndicator();
+//           } else {
+//             _buildEventsList(
+//                 context, snapshot.data.documents, login_user, channelName);
+//             return ListView.builder(
+//                 controller: controller,
+//                 itemCount: userEventsList.length,
+//                 padding: EdgeInsets.only(top: 0, bottom: 0),
+//                 physics: BouncingScrollPhysics(),
+//                 itemBuilder: (context, index) {
+//                   double scale = 1.0;
+//                   if (topContainer > 0.5) {
+//                     scale = index + 0.5 - topContainer;
+//                     if (scale < 0) {
+//                       scale = 0;
+//                     } else if (scale > 1) {
+//                       scale = 1;
+//                     }
+//                   }
+//                   return Opacity(
+//                       opacity: scale,
+//                       child: Transform(
+//                         transform: Matrix4.identity()..scale(scale, scale),
+//                         alignment: Alignment.bottomCenter,
+//                         child: Align(
+//                           heightFactor: 0.7,
+//                           alignment: Alignment.topCenter,
+//                           child: ChannelState()
+//                               .EventcardTemplate(userEventsList[index]),
+//                         ),
+//                       ));
+//                 });
+//           }
+//         });
+//   }
 }
