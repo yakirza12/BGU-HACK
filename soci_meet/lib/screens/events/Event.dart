@@ -73,67 +73,69 @@ class _State extends State<EventInfoWidget> {
           creatorUpdateEvent(widget.login_user, myEvent),
         ],
       ),
-      body: Card(
-        margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: [
-                  Text(
-                    'Creator: ',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Text(myEvent.creator, style: TextStyle(fontSize: 20)),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                children: [
-                  Text('Date: ', style: TextStyle(fontSize: 20)),
-                  Text(
-                      '${myEvent.date.toString().substring(0, myEvent.date.toString().indexOf(' '))}',
-                      style: TextStyle(fontSize: 20)),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                children: [
-                  Text('Time: ', style: TextStyle(fontSize: 20)),
-                  Text(
-                      '${myEvent.date.toString().substring(myEvent.date.toString().indexOf(' '), myEvent.date.toString().length - 7)}',
-                      style: TextStyle(fontSize: 20)),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                children: [
-                  Text('Address: ', style: TextStyle(fontSize: 20)),
-                  Text('${myEvent.address}', style: TextStyle(fontSize: 20)),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                children: [
-                  Text('Number of participants: ${myEvent.counter}/',
-                      style: TextStyle(fontSize: 20)),
-                  Text('${myEvent.numberOfParticipants}',
-                      style: TextStyle(fontSize: 20)),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              )
-            ],
+      body: SingleChildScrollView(
+        child: Card(
+          margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: [
+                    Text(
+                      'Creator: ',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(myEvent.creator, style: TextStyle(fontSize: 20)),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    Text('Date: ', style: TextStyle(fontSize: 20)),
+                    Text(
+                        '${myEvent.date.toString().substring(0, myEvent.date.toString().indexOf(' '))}',
+                        style: TextStyle(fontSize: 20)),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    Text('Time: ', style: TextStyle(fontSize: 20)),
+                    Text(
+                        '${myEvent.date.toString().substring(myEvent.date.toString().indexOf(' '), myEvent.date.toString().length - 7)}',
+                        style: TextStyle(fontSize: 20)),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    Text('Address: ', style: TextStyle(fontSize: 20)),
+                    Text('${myEvent.address}', style: TextStyle(fontSize: 20)),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    Text('Number of participants: ${myEvent.counter}/',
+                        style: TextStyle(fontSize: 20)),
+                    Text('${myEvent.numberOfParticipants}',
+                        style: TextStyle(fontSize: 20)),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -274,24 +276,29 @@ class _State extends State<EventInfoWidget> {
     if (user.uid == event.creator_id) {
       return Tooltip(
         message: "Update event",
-        child: FlatButton.icon(
-            onPressed: () async{
-              int counter = event.counter;
-              List<dynamic> eventUserList = event.userList;
-              setState(() {
-                var alertDialog =AlertDialog(
-                    title: Text("Update Event"),
-                    content:EventForm(widget.channel, user, null, event.date, event.numberOfParticipants,
-                        event.address, event.eventId)
-                );
-                ChannelsDatabaseServices().updateEvent(
-                    event.channelName, event.eventId, counter, user.uid, eventUserList);
-                showDialog(context: context, builder: (_) => alertDialog);
-                Navigator.pop(context);
-              });
-            },
-            icon: Icon(Icons.save),
-            label: Text(" "))
+        child: FutureBuilder<DocumentSnapshot>(
+          future: Firestore.instance.collection("Channels").document(event.channelName).collection("Events").document(event.eventId).get(),
+          builder: (context, snapshot) {
+            return FlatButton.icon(
+                onPressed: () async{
+                  int counter = event.counter;
+                  List<dynamic> eventUserList = event.userList;
+                  setState(()  {
+                    var alertDialog =AlertDialog(
+                        title: Text("Update Event"),
+                        content:EventForm(widget.channel, user, null, event.date, event.numberOfParticipants,
+                            event.address, event.eventId)
+                    );
+                    ChannelsDatabaseServices().updateEvent(
+                        event.channelName, event.eventId, counter, user.uid, eventUserList);
+                    myEvent = Event.fromSnapshot(snapshot.data);// TODO fix - the new data is not displaying on the page, only when returning to it.
+                    showDialog(context: context, builder: (_) => alertDialog);
+                  });
+                },
+                icon: Icon(Icons.save),
+                label: Text(" "));
+          }
+        )
       );
     }
     else{

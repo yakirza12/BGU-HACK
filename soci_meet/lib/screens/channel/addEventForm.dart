@@ -169,6 +169,8 @@ class _EventFormState extends State<EventForm> {
                         if(widget.eventId == null)
                           widget.eventId = UniqueKey().toString();
                         Navigator.pop(context);
+
+
                         print(
                             "this is the event list of the user before update" +
                                 widget.user.userEventsIdMap.toString());
@@ -181,9 +183,6 @@ class _EventFormState extends State<EventForm> {
                             widget.eventId);
                         widget.updateUserEventsIdMap(
                             widget.user, widget.channel.channelName, widget.eventId);
-                        print(
-                            "this is the event list of the user after update" +
-                                widget.user.userEventsIdMap.toString());
                         UserDatabaseService()
                             .updateUserEvents(widget.user); //update in database
                         widget.channel.eventCount++;
