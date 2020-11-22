@@ -1,5 +1,5 @@
 # Project Name
-> Sociemeet
+> Socimeet
 
 ## Table of contents
 * [General info](#general-info)
@@ -11,13 +11,26 @@
 * [Contact](#contact)
 
 ## General info
-Sociemeet is an app to make your social life easier.
+Socimeet is an app to make your social life easier.
 You can use it to set up different kind of meetings with your friends or with people you have never met before.
 During this time, we as a society, have a hard time connecting to new people and Sociemeet is a great platform to find this new connection, this new friend or even a group of friends which share the same interests as you! 
 
 ## Screenshots
-Here insert images showing how to sign up\in and basic use of the app
-![Example screenshot](./img/screenshot.png)
+Welcome to Socimeet!<br>
+![Example screenshot](soci_meet/assets/sign%20in.png)<br>
+
+![Example screenshot](soci_meet/assets/sign%20up.png)<br>
+HomePage<br>
+![Example screenshot](soci_meet/assets/Home.png)<br>
+General Parties Events<br>
+![Example screenshot](soci_meet/assets/Parties%20events.png)<br>
+Events Info<br>
+![Example screenshot](soci_meet/assets/event%20info.png)<br>
+Add OR update an event<br>
+![Example screenshot](soci_meet/assets/add%20event.png)<br>
+
+
+
 
 ## Technologies
 * Flutter - version 1.22.2

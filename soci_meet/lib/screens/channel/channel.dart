@@ -3,10 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/event.dart';
-import 'package:socimeet/models/party.dart';
 import 'package:socimeet/models/user.dart';
 import 'addEventForm.dart';
-
 import '../events/EventInfo.dart';
 
 /// Channel screen
@@ -48,8 +46,8 @@ class ChannelState extends State<ChannelWidget> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  EventInfoWidget(eve, widget.login_user, widget.channel)));
+                              builder: (context) => EventInfoWidget(
+                                  eve, widget.login_user, widget.channel)));
                     },
                     icon: Icon(Icons.info),
                     tooltip: "Event information",
@@ -135,13 +133,12 @@ class ChannelState extends State<ChannelWidget> {
                   centerTitle: true,
                   elevation: 0,
                 ),
-
                 floatingActionButton: FloatingActionButton(
                   onPressed: () {
                     var alertDialog = AlertDialog(
                       title: Text("Add Event"),
-                      content:
-                          EventForm(widget.channel, widget.login_user, _events,null,"","",null),
+                      content: EventForm(widget.channel, widget.login_user,
+                          _events, null, "", "", null),
                     );
                     showDialog(context: context, builder: (_) => alertDialog);
                   },
@@ -153,7 +150,8 @@ class ChannelState extends State<ChannelWidget> {
                     image: DecorationImage(
                       colorFilter: new ColorFilter.mode(
                           Colors.black.withOpacity(0.83), BlendMode.dstATop),
-                      image: AssetImage("assets/"+widget.channel.channelName+".jpg"),
+                      image: AssetImage(
+                          "assets/" + widget.channel.channelName + ".jpg"),
                       fit: BoxFit.cover,
                     ),
                   ),
