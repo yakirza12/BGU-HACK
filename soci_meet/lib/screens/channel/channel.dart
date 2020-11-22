@@ -42,7 +42,7 @@ class ChannelState extends State<ChannelWidget> {
                       color: Colors.grey[600],
                     ),
                   ),
-                  FlatButton.icon(
+                  IconButton(
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -51,8 +51,8 @@ class ChannelState extends State<ChannelWidget> {
                                   EventInfoWidget(eve, widget.login_user)));
                     },
                     icon: Icon(Icons.info),
-                    label: Text(''),
-                  )
+                    tooltip: "Event information",
+                  ),
                 ],
               ),
 

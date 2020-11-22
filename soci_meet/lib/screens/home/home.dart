@@ -89,8 +89,7 @@ class _HomeState extends State<Home> {
                       label: Text("Out")),
                 ],
               ),
-              body:
-              Container(
+              body: Container(
                 height: size.height,
                 decoration: BoxDecoration(
                   color: Color(0xFFFFCCBF),
@@ -109,7 +108,7 @@ class _HomeState extends State<Home> {
                       height: 20,
                     ),
                     Text(
-                      "Welcome "+ _user.first_name+"!",
+                      "Welcome " + _user.first_name + "!",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.blueGrey,
@@ -154,19 +153,19 @@ class _HomeState extends State<Home> {
                           fontSize: 20),
                     ),
                     Flexible(
-                      child:AnimatedOpacity(
-                        duration: const Duration(milliseconds: 200),
-                        opacity: 0.8,
-                        child: AnimatedContainer(
+                        child: AnimatedOpacity(
                           duration: const Duration(milliseconds: 200),
-                          width: size.width,
-                          alignment: Alignment.topCenter,
-                          height: channelHeight,
-                          child: UserEventsCategoriesScroller(_user, arrayChannels),
+                          opacity: 0.8,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            width: size.width,
+                            alignment: Alignment.topCenter,
+                            height: channelHeight,
+                            child: UserEventsCategoriesScroller(
+                                _user, arrayChannels),
+                          ),
                         ),
-                      ),
-                        flex: 5
-                    )
+                        flex: 5)
                   ],
                 ),
               ),
@@ -233,12 +232,24 @@ class ChannelsCategoriesScroller extends StatelessWidget {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            arrayChannels[0].events.length.toString() +
-                                " Available Events",
-                            // TODO add counter to count existing events in this channel
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
+                          StreamBuilder<QuerySnapshot>(
+                              stream: Firestore.instance
+                                  .collection("Channels")
+                                  .document(arrayChannels[0].channelName)
+                                  .collection("Events")
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData)
+                                  return LinearProgressIndicator();
+                                else {
+                                  return Text(
+                                    snapshot.data.documents.length.toString() +
+                                        " Available Events",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  );
+                                }
+                              }),
                         ],
                       ),
                     ),
@@ -267,7 +278,7 @@ class ChannelsCategoriesScroller extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              "Shabat Dinner",
+                              "Shabat Dinner ",
                               style: TextStyle(
                                   fontSize: 25,
                                   color: Colors.white,
@@ -276,12 +287,25 @@ class ChannelsCategoriesScroller extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            Text(
-                              arrayChannels[1].events.length.toString() +
-                                  " Available Events",
-                              //TODO add counter to count existing events in channel
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
+                            StreamBuilder<QuerySnapshot>(
+                                stream: Firestore.instance
+                                    .collection("Channels")
+                                    .document(arrayChannels[1].channelName)
+                                    .collection("Events")
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData)
+                                    return LinearProgressIndicator();
+                                  else {
+                                    return Text(
+                                      snapshot.data.documents.length.toString() +
+                                          " Available Events",
+
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    );
+                                  }
+                              }
                             ),
                           ],
                         ),
@@ -320,11 +344,24 @@ class ChannelsCategoriesScroller extends StatelessWidget {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            arrayChannels[2].events.length.toString() +
-                                " Available Events",
-                            //TODO add counter to count existing events in channel
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          StreamBuilder<QuerySnapshot>(
+                              stream: Firestore.instance
+                                  .collection("Channels")
+                                  .document(arrayChannels[2].channelName)
+                                  .collection("Events")
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData)
+                                  return LinearProgressIndicator();
+                                else {
+                                  return Text(
+                                    snapshot.data.documents.length.toString() +
+                                        " Available Events",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  );
+                                }
+                              }
                           ),
                         ],
                       ),
@@ -353,9 +390,8 @@ class UserEventsCategoriesScroller extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double categoryHeight =
-        MediaQuery.of(context).size.height * 0.30 ;
-    final double categoryWidth = MediaQuery.of(context).size.width * 0.30 ;
+    final double categoryHeight = MediaQuery.of(context).size.height * 0.30;
+    final double categoryWidth = MediaQuery.of(context).size.width * 0.30;
     return SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
@@ -381,7 +417,7 @@ class UserEventsCategoriesScroller extends StatelessWidget {
                     child: Container(
                       width: categoryWidth,
                       margin: EdgeInsets.only(right: 20),
-                      height: categoryHeight-100,
+                      height: categoryHeight - 100,
                       decoration: BoxDecoration(
                           color: Colors.orange[400],
                           borderRadius:
@@ -393,7 +429,7 @@ class UserEventsCategoriesScroller extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               ///Box name
-                              "My "+arrayChannels[0].channelName,
+                              "My " + arrayChannels[0].channelName,
                               style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
@@ -405,11 +441,11 @@ class UserEventsCategoriesScroller extends StatelessWidget {
                     )),
                 GestureDetector(
                     onTap: () => {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                    builder: (context) => myEventsWidget(
-                        login_user, arrayChannels[1])))
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => myEventsWidget(
+                                      login_user, arrayChannels[1])))
                           // TODO need to change it so we won't hardcode the index of the arrayChannels
                         },
                     child: Container(
@@ -427,7 +463,7 @@ class UserEventsCategoriesScroller extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               ///Box name
-                              "My "+arrayChannels[1].channelName,
+                              "My " + arrayChannels[1].channelName,
                               style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
@@ -439,17 +475,17 @@ class UserEventsCategoriesScroller extends StatelessWidget {
                     )),
                 GestureDetector(
                     onTap: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => myEventsWidget(
-                                  login_user, arrayChannels[2])))
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => myEventsWidget(
+                                      login_user, arrayChannels[2])))
                           // TODO need to change it so we won't hardcode the index of the arrayChannels
                         },
                     child: Container(
                       width: categoryWidth,
                       margin: EdgeInsets.only(right: 20),
-                      height: categoryHeight-100,
+                      height: categoryHeight - 100,
                       decoration: BoxDecoration(
                           color: Colors.pink.shade400,
                           borderRadius:
@@ -461,7 +497,7 @@ class UserEventsCategoriesScroller extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               ///Box name
-                              "My "+arrayChannels[2].channelName,
+                              "My " + arrayChannels[2].channelName,
                               style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,

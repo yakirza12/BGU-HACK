@@ -15,10 +15,9 @@ class ChannelsDatabaseServices {
       'Channels');
 
 /// Updating an event after a user joins or leaves the event
-  Future updateEvent(String channelName, String index, int counter, String uid, List<dynamic>userList) async {
+  Future updateEvent(String channelName, String eventId, int counter, String uid, List<dynamic>userList) async {
     final eventsCollection = channelCollection.document(channelName).collection('Events');
-    userList.add(uid);
-    return await eventsCollection.document(index).updateData({
+    return await eventsCollection.document(eventId).updateData({
       'counter' : counter,
       'userList': userList,
     });

@@ -66,7 +66,7 @@ class _State extends State<EventInfoWidget> {
         title: Text('Event'),
         centerTitle: true,
         backgroundColor:Colors.blue[900] ,
-        actions: [userDelete(widget.login_user, myEvent)],
+        actions: [creatorEventDelete(widget.login_user, myEvent),userUnsubscribeEvent(widget.login_user, myEvent)],
       ),
       body:Card(
         margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
@@ -127,6 +127,7 @@ class _State extends State<EventInfoWidget> {
             if(myEvent.counter < int.parse(myEvent.numberOfParticipants)){
               setState(() {
                 myEvent.counter++;
+                myEvent.userList.add(widget.login_user.uid);
                 EventForm(null,null,null).updateUserEventsIdMap(widget.login_user, myEvent.channelName, myEvent.eventId); //add to event id map
                 ChannelsDatabaseServices().updateEvent( myEvent.channelName, myEvent.eventId, myEvent.counter, widget.login_user.uid,myEvent.userList);//update event in firebase + update eventUserList
                 UserDatabaseService().updateUserEvents(widget.login_user); //update in database the event id map
@@ -147,9 +148,9 @@ class _State extends State<EventInfoWidget> {
     );
   }
 
-  /// delete event id from map
+  /// delete event id from user events map
   // TODO add deleting from all users subscribing to this event, currently only deleting from the event creator.
-  void deleteEventFromMap(User user, String channelName, String eventId){
+  void deleteEventFromUserEventsMap(User user, String channelName, String eventId){
     user.userEventsIdMap.forEach((key, value) {
       if(value.contains(eventId)){
         value.remove(eventId);
@@ -163,28 +164,52 @@ class _State extends State<EventInfoWidget> {
   /// If you are the creator the event is deleted
   /// If you are a user subscribing you will leave this event.
   // TODO add warning about deleting\unsubscribe so a user can confirm his decision
-  Widget userDelete(User user,Event event){
+  Widget creatorEventDelete(User user,Event event){
     // If I am the creator, delete the event
     if(user.uid == event.creator_id ) {
-     return FlatButton.icon(
-          icon: Icon(Icons.delete),
-          onPressed: () async {
-            event.userList.map((uid){ //for each user in this event, delete the event id from its map in the database
-              Future<User> user =Firestore.instance.collection('users').document(uid).get().then((doc) =>User.fromSnapshot(doc, uid));
-              user.then((userFuture)=>deleteEventFromMap(userFuture, event.channelName, event.eventId));
-              user.then((userFuture)=> UserDatabaseService().updateUserEvents(userFuture));
+     return Tooltip(
+       message: "Delete Event",
+       child: FlatButton.icon(
+            icon: Icon(Icons.delete),
+            onPressed: () async {
+              event.userList.map((uid){ //for each user in this event, delete the event id from its map in the database
+                Future<User> user =Firestore.instance.collection('users').document(uid).get().then((doc) =>User.fromSnapshot(doc, uid));
+                user.then((userFuture)=>deleteEventFromUserEventsMap(userFuture, event.channelName, event.eventId));
+                user.then((userFuture)=> UserDatabaseService().updateUserEvents(userFuture));
+              });
+              deleteEventFromUserEventsMap(user, event.channelName, event.eventId);
+              UserDatabaseService().updateUserEvents(user);
+              Firestore.instance.collection('Channels').document(event.channelName)
+                  .collection('Events').document(event.eventId)
+                  .delete();
+              Navigator.pop(context);
+            },
+           label: Text("")),
+     );
+    }
+
+      return FlatButton.icon(icon: Icon(Icons.delete),label: Text(""),);
+  }
+
+  // TODO add here that a user can leave an event using this button.
+  Widget userUnsubscribeEvent(User user,Event event){
+    // if this user subscribed to this event and he is not the creator
+    if(event.userList.contains(user.uid) && event.creator_id != user.uid){
+      return FlatButton.icon(
+          onPressed: () async{
+            setState(() {
+              event.counter --;
+              event.userList.remove(user.uid);
+              deleteEventFromUserEventsMap(user, event.channelName, event.eventId);
+              ChannelsDatabaseServices().updateEvent(event.channelName, event.eventId, event.counter, user.uid, event.userList);///Update this event on firebase
+              UserDatabaseService().updateUserEvents(user); ///Updates the user event id list
             });
-            deleteEventFromMap(user, event.channelName, event.eventId);
-            UserDatabaseService().updateUserEvents(user);
-            Firestore.instance.collection('Channels').document(event.channelName)
-                .collection('Events').document(event.eventId)
-                .delete();
             Navigator.pop(context);
           },
-         label: Text(""));
+          icon: Icon(Icons.person_remove_sharp),
+          label: Text(" ")
+      );
     }
-    // TODO add here that a user can leave an event using this button.
-    else{}
-      return FlatButton.icon(icon: Icon(Icons.delete),label: Text(""),);
+    return Text(" ");
   }
 }
