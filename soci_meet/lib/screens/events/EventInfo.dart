@@ -276,7 +276,7 @@ class _State extends State<EventInfoWidget> {
               });
               showAlertDialog(context, "You have unsubscribed from this event");
             },
-            icon: Icon(Icons.person_remove_sharp),
+            icon: Icon(Icons.cancel),
             label: Text(" ")),
       );
     }

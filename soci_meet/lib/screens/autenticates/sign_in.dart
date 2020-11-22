@@ -25,6 +25,24 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Sign in Error"),
+      content: Text('Wrong mail or Password'),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -185,9 +203,22 @@ class _SignInState extends State<SignIn> {
                                                       email, password);
 
                                               if (result == null) {
-                                                setState(() => error =
-                                                    'please suppp error on register'); //TODO check
+                                                //TODO check
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return alert;
+                                                  },
+                                                );
                                               }
+                                            }
+                                            else{
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return alert;
+                                                },
+                                              );
                                             }
                                           },
                                           child: new Container(
@@ -226,5 +257,7 @@ class _SignInState extends State<SignIn> {
             )),
       ),
     );
+
   }
+
 }
