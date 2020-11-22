@@ -48,7 +48,7 @@ class ChannelState extends State<ChannelWidget> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  EventInfoWidget(eve, widget.login_user)));
+                                  EventInfoWidget(eve, widget.login_user, widget.channel)));
                     },
                     icon: Icon(Icons.info),
                     tooltip: "Event information",
@@ -139,7 +139,7 @@ class ChannelState extends State<ChannelWidget> {
                     var alertDialog = AlertDialog(
                       title: Text("Add Event"),
                       content:
-                          EventForm(widget.channel, widget.login_user, _events),
+                          EventForm(widget.channel, widget.login_user, _events,null,"","",null),
                     );
                     showDialog(context: context, builder: (_) => alertDialog);
                   },

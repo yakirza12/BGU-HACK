@@ -46,7 +46,7 @@ class myEventsState extends State<myEventsWidget> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  EventInfoWidget(eve, widget.login_user)));
+                                  EventInfoWidget(eve, widget.login_user,widget.channel)));
                     },
                     icon: Icon(Icons.info),
                     label: Text(''),

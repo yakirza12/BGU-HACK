@@ -12,15 +12,20 @@ class EventForm extends StatefulWidget {
   List<Event> _events;
   bool isValid = false;
   final Channel channel;
+  DateTime date;
+  String numberOfParticipants;
+  String address;
+  String eventId;
 
-  EventForm(this.channel, this.user, this._events);
+  EventForm(this.channel, this.user, this._events, this.date,this.numberOfParticipants,this.address,this.eventId);
 
   /// add event id to the user map
   void updateUserEventsIdMap(User user, String channelName, String eventId) {
     if (user.userEventsIdMap.containsKey(channelName)) {
       //adding event id to map if the channel exist
       user.userEventsIdMap.update(channelName, (value) {
-        value.add(eventId);
+        if(!value.contains(eventId))
+          value.add(eventId);
         return value;
       });
     } else
@@ -37,11 +42,7 @@ class EventForm extends StatefulWidget {
 class _EventFormState extends State<EventForm> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
-  DateTime date;
-  String numberOfParticipants;
-  User creator;
   int counter = 1; //how many users are registered
-  String address;
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +71,9 @@ class _EventFormState extends State<EventForm> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 SizedBox(height: 20.0),
-                // Adress form field
+                // Address form field
                 TextFormField(
+                  initialValue:widget.address ,
                   validator: (val) => val.isEmpty ? "enter Address" : null,
                   decoration: InputDecoration(
                       fillColor: Colors.white,
@@ -86,26 +88,27 @@ class _EventFormState extends State<EventForm> {
                   onChanged: (val) {
                     _formKey.currentState.save();
                     setState(() {
-                      address = val;
+                      widget.address = val;
                     });
                   },
                 ),
                 new Padding(padding: EdgeInsets.all(8.0)),
                 DateTimeField(
+                    initialValue:widget.date ,
                     format: DateFormat("yyyy-MM-dd 'At' HH:mm"),
                     onShowPicker: (context, currentValue) async {
-                      date = await showDatePicker(
+                      widget.date = await showDatePicker(
                           context: context,
                           firstDate: DateTime.now(),
                           initialDate: currentValue ?? DateTime.now(),
                           lastDate: DateTime(2100));
-                      if (date != null) {
+                      if (widget.date != null) {
                         final time = await showTimePicker(
                           context: context,
                           initialTime: TimeOfDay.fromDateTime(
                               currentValue ?? DateTime.now()),
                         );
-                        return DateTimeField.combine(date, time);
+                        return DateTimeField.combine(widget.date, time);
                       } else {
                         return currentValue;
                       }
@@ -120,12 +123,13 @@ class _EventFormState extends State<EventForm> {
                     onChanged: (dt) {
                       _formKey.currentState.save();
                       setState(() {
-                        date = dt;
+                        widget.date = dt;
                       });
                     }),
                 new Padding(padding: EdgeInsets.all(8.0)),
                 // Number of participants form field
                 TextFormField(
+                  initialValue:widget.numberOfParticipants ,
                   validator: (val) => numberValidator(val),
                   decoration: InputDecoration(
                       fillColor: Colors.white,
@@ -143,7 +147,7 @@ class _EventFormState extends State<EventForm> {
                       widget.isValid =
                           true; // TODO this only works correctly when user fill fields from top to bottom, need to find a better way to do it
                     setState(() {
-                      numberOfParticipants = val;
+                      widget.numberOfParticipants = val;
                     });
                   },
                 ),
@@ -153,7 +157,7 @@ class _EventFormState extends State<EventForm> {
                 RaisedButton(
                     color: widget.isValid ? Colors.blue : Colors.pink[52],
                     child: Text(
-                      'Add event',
+                      widget.eventId !=null?'Update event':'Add event',
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
@@ -162,20 +166,21 @@ class _EventFormState extends State<EventForm> {
                       if (form.validate()) //will check if our from is legit
                       {
                         widget.isValid = true;
-                        String event_key = UniqueKey().toString();
+                        if(widget.eventId == null)
+                          widget.eventId = UniqueKey().toString();
                         Navigator.pop(context);
                         print(
                             "this is the event list of the user before update" +
                                 widget.user.userEventsIdMap.toString());
                         dynamic result = _auth.createChannel(
-                            date,
-                            numberOfParticipants,
+                            widget.date,
+                            widget.numberOfParticipants,
                             widget.user,
-                            address,
+                            widget.address,
                             widget.channel,
-                            event_key);
+                            widget.eventId);
                         widget.updateUserEventsIdMap(
-                            widget.user, widget.channel.channelName, event_key);
+                            widget.user, widget.channel.channelName, widget.eventId);
                         print(
                             "this is the event list of the user after update" +
                                 widget.user.userEventsIdMap.toString());

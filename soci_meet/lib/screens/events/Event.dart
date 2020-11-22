@@ -1,8 +1,6 @@
-
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/event.dart';
 import 'package:socimeet/models/user.dart';
 import 'package:socimeet/screens/channel/addEventForm.dart';
@@ -10,22 +8,19 @@ import 'package:socimeet/screens/channel/addEventForm.dart';
 import 'package:socimeet/services/channelsDB.dart';
 import 'package:socimeet/services/userDatabase.dart';
 
-showAlertDialog(BuildContext context,String msg) {
-
+showAlertDialog(BuildContext context, String msg) {
   // set up the buttons
   Widget okButton = FlatButton(
     child: Text("Ok"),
-    onPressed:  () {
+    onPressed: () {
       Navigator.pop(context);
     },
   );
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text("Error"),
+    title: Text("Message"),
     content: Text(msg),
-    actions: [
-      okButton
-    ],
+    actions: [okButton],
   );
 
   // show the dialog
@@ -44,12 +39,16 @@ showAlertDialog(BuildContext context,String msg) {
 // ignore: must_be_immutable
 class EventInfoWidget extends StatefulWidget {
   Event myEvent;
+  Channel channel;
   // ignore: non_constant_identifier_names
   User login_user;
-  EventInfoWidget(Event myEvent,User login_user){
-    this.myEvent=myEvent;
+
+  EventInfoWidget(Event myEvent, User login_user,Channel channel) {
+    this.myEvent = myEvent;
     this.login_user = login_user;
+    this.channel = channel;
   }
+
   @override
   _State createState() => _State(myEvent);
 }
@@ -57,18 +56,24 @@ class EventInfoWidget extends StatefulWidget {
 class _State extends State<EventInfoWidget> {
   Event myEvent;
   bool isJoined = false;
-  _State(Event myEvent){
-    this.myEvent=myEvent;
+
+  _State(Event myEvent) {
+    this.myEvent = myEvent;
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Event'),
         centerTitle: true,
-        backgroundColor:Colors.blue[900] ,
-        actions: [creatorEventDelete(widget.login_user, myEvent),userUnsubscribeEvent(widget.login_user, myEvent)],
+        backgroundColor: Colors.blue[900],
+        actions: [
+          creatorEventDelete(widget.login_user, myEvent),
+          userUnsubscribeEvent(widget.login_user, myEvent),
+          creatorUpdateEvent(widget.login_user, myEvent),
+        ],
       ),
-      body:Card(
+      body: Card(
         margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -76,71 +81,103 @@ class _State extends State<EventInfoWidget> {
             children: <Widget>[
               Row(
                 children: [
-                  Text('Creator: ', style: TextStyle(fontSize: 20) ,),
+                  Text(
+                    'Creator: ',
+                    style: TextStyle(fontSize: 20),
+                  ),
                   Text(myEvent.creator, style: TextStyle(fontSize: 20)),
                 ],
               ),
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               Row(
                 children: [
-                  Text('Date: ', style: TextStyle(fontSize: 20) ),
-                  Text('${myEvent.date.toString().substring(0,myEvent.date.toString().indexOf(' '))}', style: TextStyle(fontSize: 20) ),
+                  Text('Date: ', style: TextStyle(fontSize: 20)),
+                  Text(
+                      '${myEvent.date.toString().substring(0, myEvent.date.toString().indexOf(' '))}',
+                      style: TextStyle(fontSize: 20)),
                 ],
               ),
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               Row(
                 children: [
-                  Text('Time: ', style: TextStyle(fontSize: 20) ),
-                  Text('${myEvent.date.toString().substring(myEvent.date.toString().indexOf(' '),myEvent.date.toString().length-7)}', style: TextStyle(fontSize: 20) ),
+                  Text('Time: ', style: TextStyle(fontSize: 20)),
+                  Text(
+                      '${myEvent.date.toString().substring(myEvent.date.toString().indexOf(' '), myEvent.date.toString().length - 7)}',
+                      style: TextStyle(fontSize: 20)),
                 ],
               ),
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               Row(
                 children: [
-                  Text('Address: ', style: TextStyle(fontSize: 20) ),
-                  Text('${myEvent.address}', style: TextStyle(fontSize: 20) ),
+                  Text('Address: ', style: TextStyle(fontSize: 20)),
+                  Text('${myEvent.address}', style: TextStyle(fontSize: 20)),
                 ],
               ),
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               Row(
                 children: [
-                  Text('Number of participants: ${myEvent.counter}/', style: TextStyle(fontSize: 20) ),
-                  Text('${myEvent.numberOfParticipants}', style: TextStyle(fontSize: 20) ),
+                  Text('Number of participants: ${myEvent.counter}/',
+                      style: TextStyle(fontSize: 20)),
+                  Text('${myEvent.numberOfParticipants}',
+                      style: TextStyle(fontSize: 20)),
                 ],
               ),
-              SizedBox(height: 30,)
+              SizedBox(
+                height: 30,
+              )
             ],
           ),
         ),
       ),
+
       /// Join button
       ///
       /// User can join events by using this button
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          for(int i = 0;i<myEvent.userList.length;i++){
-            if(widget.login_user.uid == myEvent.userList[i] ){
+        onPressed: () {
+          for (int i = 0; i < myEvent.userList.length; i++) {
+            if (widget.login_user.uid == myEvent.userList[i]) {
               isJoined = true;
             }
           }
-          if(!isJoined){
-            if(myEvent.counter < int.parse(myEvent.numberOfParticipants)){
+          if (!isJoined) {
+            if (myEvent.counter < int.parse(myEvent.numberOfParticipants)) {
               setState(() {
                 myEvent.counter++;
                 myEvent.userList.add(widget.login_user.uid);
-                EventForm(null,null,null).updateUserEventsIdMap(widget.login_user, myEvent.channelName, myEvent.eventId); //add to event id map
-                ChannelsDatabaseServices().updateEvent( myEvent.channelName, myEvent.eventId, myEvent.counter, widget.login_user.uid,myEvent.userList);//update event in firebase + update eventUserList
-                UserDatabaseService().updateUserEvents(widget.login_user); //update in database the event id map
+                EventForm(null, null, null, null, null, null, null)
+                    .updateUserEventsIdMap(
+                        widget.login_user,
+                        myEvent.channelName,
+                        myEvent.eventId); //add to event id map
+                ChannelsDatabaseServices().updateEvent(
+                    myEvent.channelName,
+                    myEvent.eventId,
+                    myEvent.counter,
+                    widget.login_user.uid,
+                    myEvent
+                        .userList); //update event in firebase + update eventUserList
+                UserDatabaseService().updateUserEvents(
+                    widget.login_user); //update in database the event id map
               });
-              isJoined=true;
-              Navigator.pop(context);
+              isJoined = true;
+              showAlertDialog(context, "You have joined this event, have fun!");
+            } else {
+              showAlertDialog(context, "This event is already full!");
             }
-            else{
-              showAlertDialog(context,"This event is already full!");
-            }
-          }
-          else{
-            showAlertDialog(context,widget.login_user.first_name+" you are already a part of this event");
+          } else {
+            showAlertDialog(
+                context,
+                widget.login_user.first_name +
+                    " you are already a part of this event");
           }
         },
         child: Text('join'),
@@ -150,66 +187,115 @@ class _State extends State<EventInfoWidget> {
 
   /// delete event id from user events map
   // TODO add deleting from all users subscribing to this event, currently only deleting from the event creator.
-  void deleteEventFromUserEventsMap(User user, String channelName, String eventId){
+  void deleteEventFromUserEventsMap(
+      User user, String channelName, String eventId) {
     user.userEventsIdMap.forEach((key, value) {
-      if(value.contains(eventId)){
+      if (value.contains(eventId)) {
         value.remove(eventId);
         return;
       }
     });
   }
 
-  /// Event deletion \ leaving
+  /// Event deletion
   ///
-  /// If you are the creator the event is deleted
-  /// If you are a user subscribing you will leave this event.
+  /// If you are the creator the event will be deleted
   // TODO add warning about deleting\unsubscribe so a user can confirm his decision
-  Widget creatorEventDelete(User user,Event event){
+  Widget creatorEventDelete(User user, Event event) {
     // If I am the creator, delete the event
-    if(user.uid == event.creator_id ) {
-     return Tooltip(
-       message: "Delete Event",
-       child: FlatButton.icon(
+    if (user.uid == event.creator_id) {
+      return Tooltip(
+        message: "Delete Event",
+        child: FlatButton.icon(
             icon: Icon(Icons.delete),
             onPressed: () async {
-              event.userList.map((uid){ //for each user in this event, delete the event id from its map in the database
-                Future<User> user =Firestore.instance.collection('users').document(uid).get().then((doc) =>User.fromSnapshot(doc, uid));
-                user.then((userFuture)=>deleteEventFromUserEventsMap(userFuture, event.channelName, event.eventId));
-                user.then((userFuture)=> UserDatabaseService().updateUserEvents(userFuture));
+              event.userList.map((uid) {
+                //for each user in this event, delete the event id from its map in the database
+                Future<User> user = Firestore.instance
+                    .collection('users')
+                    .document(uid)
+                    .get()
+                    .then((doc) => User.fromSnapshot(doc, uid));
+                user.then((userFuture) => deleteEventFromUserEventsMap(
+                    userFuture, event.channelName, event.eventId));
+                user.then((userFuture) =>
+                    UserDatabaseService().updateUserEvents(userFuture));
               });
-              deleteEventFromUserEventsMap(user, event.channelName, event.eventId);
+              deleteEventFromUserEventsMap(
+                  user, event.channelName, event.eventId);
               UserDatabaseService().updateUserEvents(user);
-              Firestore.instance.collection('Channels').document(event.channelName)
-                  .collection('Events').document(event.eventId)
+              Firestore.instance
+                  .collection('Channels')
+                  .document(event.channelName)
+                  .collection('Events')
+                  .document(event.eventId)
                   .delete();
               Navigator.pop(context);
             },
-           label: Text("")),
-     );
+            label: Text("")),
+      );
     }
 
-      return FlatButton.icon(icon: Icon(Icons.delete),label: Text(""),);
+    return Text("");
   }
 
-  // TODO add here that a user can leave an event using this button.
-  Widget userUnsubscribeEvent(User user,Event event){
+  /// User unSubscribes from an event.
+  Widget userUnsubscribeEvent(User user, Event event) {
     // if this user subscribed to this event and he is not the creator
-    if(event.userList.contains(user.uid) && event.creator_id != user.uid){
-      return FlatButton.icon(
-          onPressed: () async{
-            setState(() {
-              event.counter --;
-              event.userList.remove(user.uid);
-              deleteEventFromUserEventsMap(user, event.channelName, event.eventId);
-              ChannelsDatabaseServices().updateEvent(event.channelName, event.eventId, event.counter, user.uid, event.userList);///Update this event on firebase
-              UserDatabaseService().updateUserEvents(user); ///Updates the user event id list
-            });
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.person_remove_sharp),
-          label: Text(" ")
+    if (event.userList.contains(user.uid) && event.creator_id != user.uid) {
+      return Tooltip(
+        message: "Unsubscribe",
+        child: FlatButton.icon(
+            onPressed: () async {
+              setState(() {
+                event.counter--;
+                event.userList.remove(user.uid);
+                deleteEventFromUserEventsMap(
+                    user, event.channelName, event.eventId);
+                ChannelsDatabaseServices().updateEvent(event.channelName,
+                    event.eventId, event.counter, user.uid, event.userList);
+
+                ///Update this event on firebase
+                UserDatabaseService().updateUserEvents(user);
+
+                ///Updates the user event id list
+              });
+              showAlertDialog(context, "You have unsubscribed from this event");
+            },
+            icon: Icon(Icons.person_remove_sharp),
+            label: Text(" ")),
       );
     }
     return Text(" ");
+  }
+
+  Widget creatorUpdateEvent(User user, Event event) {
+    // if I'm the creator I can update my event
+    if (user.uid == event.creator_id) {
+      return Tooltip(
+        message: "Update event",
+        child: FlatButton.icon(
+            onPressed: () async{
+              int counter = event.counter;
+              List<dynamic> eventUserList = event.userList;
+              setState(() {
+                var alertDialog =AlertDialog(
+                    title: Text("Update Event"),
+                    content:EventForm(widget.channel, user, null, event.date, event.numberOfParticipants,
+                        event.address, event.eventId)
+                );
+                ChannelsDatabaseServices().updateEvent(
+                    event.channelName, event.eventId, counter, user.uid, eventUserList);
+                showDialog(context: context, builder: (_) => alertDialog);
+                Navigator.pop(context);
+              });
+            },
+            icon: Icon(Icons.save),
+            label: Text(" "))
+      );
+    }
+    else{
+      return Text(" ");
+    }
   }
 }
