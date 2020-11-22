@@ -2,7 +2,7 @@
 
 import 'package:socimeet/constants.dart';
 import 'package:socimeet/models/user.dart';
-import 'package:socimeet/screens/events/Event.dart';
+import 'package:socimeet/screens/events/EventInfo.dart';
 import 'package:socimeet/screens/events/myEventsWidget.dart';
 import 'package:socimeet/services/auth.dart';
 import 'package:socimeet/screens/home/HomeManagment.dart';

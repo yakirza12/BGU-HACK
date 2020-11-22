@@ -3,10 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:socimeet/models/chanel.dart';
 import 'package:socimeet/models/event.dart';
-import 'package:socimeet/models/party.dart';
 import 'package:socimeet/models/user.dart';
 
-import '../events/Event.dart';
+import '../events/EventInfo.dart';
 
 /// myEvents screen
 class myEventsWidget extends StatefulWidget {
@@ -25,6 +24,7 @@ class myEventsState extends State<myEventsWidget> {
   /// Event card
   Widget EventcardTemplate(Event eve) {
     return Card(
+        color: Colors.white.withOpacity(0.7),
         margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -126,7 +126,7 @@ class myEventsState extends State<myEventsWidget> {
               child: Scaffold(
                 backgroundColor: Colors.grey[200],
                 appBar: AppBar(
-                  backgroundColor: Colors.blue[900],
+                  backgroundColor: Colors.blueGrey[300],
                   title: Text(widget.login_user.first_name +
                       " events from " +
                       widget.channel.channelName +
@@ -135,6 +135,15 @@ class myEventsState extends State<myEventsWidget> {
                   elevation: 0,
                 ),
                 body: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFCCBF),
+                    image: DecorationImage(
+                      colorFilter: new ColorFilter.mode(
+                          Colors.black.withOpacity(0.83), BlendMode.dstATop),
+                      image: AssetImage("assets/"+widget.channel.channelName+".jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                   child: ListView.builder(
                       itemCount: 1,
                       itemBuilder: (context, index) {

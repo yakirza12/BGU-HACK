@@ -66,75 +66,87 @@ class _State extends State<EventInfoWidget> {
       appBar: AppBar(
         title: Text('Event'),
         centerTitle: true,
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Colors.blueGrey[300],
         actions: [
           creatorEventDelete(widget.login_user, myEvent),
           userUnsubscribeEvent(widget.login_user, myEvent),
           creatorUpdateEvent(widget.login_user, myEvent),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Card(
-          margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: [
-                    Text(
-                      'Creator: ',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text(myEvent.creator, style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    Text('Date: ', style: TextStyle(fontSize: 20)),
-                    Text(
-                        '${myEvent.date.toString().substring(0, myEvent.date.toString().indexOf(' '))}',
-                        style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    Text('Time: ', style: TextStyle(fontSize: 20)),
-                    Text(
-                        '${myEvent.date.toString().substring(myEvent.date.toString().indexOf(' '), myEvent.date.toString().length - 7)}',
-                        style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    Text('Address: ', style: TextStyle(fontSize: 20)),
-                    Text('${myEvent.address}', style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    Text('Number of participants: ${myEvent.counter}/',
-                        style: TextStyle(fontSize: 20)),
-                    Text('${myEvent.numberOfParticipants}',
-                        style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                )
-              ],
+      body: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFFFFCCBF),
+          image: DecorationImage(
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.83), BlendMode.dstATop),
+            image: AssetImage("assets/"+widget.channel.channelName+"2.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Card(
+            color: Colors.white.withOpacity(0.7),
+            margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 280),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Text(
+                        'Creator: ',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(myEvent.creator, style: TextStyle(fontSize: 20)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 65,
+                  ),
+                  Row(
+                    children: [
+                      Text('Date: ', style: TextStyle(fontSize: 20)),
+                      Text(
+                          '${myEvent.date.toString().substring(0, myEvent.date.toString().indexOf(' '))}',
+                          style: TextStyle(fontSize: 20)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 65,
+                  ),
+                  Row(
+                    children: [
+                      Text('Time: ', style: TextStyle(fontSize: 20)),
+                      Text(
+                          '${myEvent.date.toString().substring(myEvent.date.toString().indexOf(' '), myEvent.date.toString().length - 7)}',
+                          style: TextStyle(fontSize: 20)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 65,
+                  ),
+                  Row(
+                    children: [
+                      Text('Address: ', style: TextStyle(fontSize: 20)),
+                      Text('${myEvent.address}', style: TextStyle(fontSize: 20)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 65,
+                  ),
+                  Row(
+                    children: [
+                      Text('Number of participants: ${myEvent.counter}/',
+                          style: TextStyle(fontSize: 20)),
+                      Text('${myEvent.numberOfParticipants}',
+                          style: TextStyle(fontSize: 20)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 65,
+                  )
+                ],
+              ),
             ),
           ),
         ),

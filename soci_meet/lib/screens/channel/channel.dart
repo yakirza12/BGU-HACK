@@ -7,7 +7,7 @@ import 'package:socimeet/models/party.dart';
 import 'package:socimeet/models/user.dart';
 import 'addEventForm.dart';
 
-import '../events/Event.dart';
+import '../events/EventInfo.dart';
 
 /// Channel screen
 class ChannelWidget extends StatefulWidget {
@@ -27,6 +27,7 @@ class ChannelState extends State<ChannelWidget> {
   /// Event card
   Widget EventcardTemplate(Event eve) {
     return Card(
+        color: Colors.white.withOpacity(0.7),
         margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -129,11 +130,12 @@ class ChannelState extends State<ChannelWidget> {
               child: Scaffold(
                 backgroundColor: Colors.grey[200],
                 appBar: AppBar(
-                  backgroundColor: Colors.blue[900],
+                  backgroundColor: Colors.blueGrey[300],
                   title: Text(widget.channel.channelName),
                   centerTitle: true,
                   elevation: 0,
                 ),
+
                 floatingActionButton: FloatingActionButton(
                   onPressed: () {
                     var alertDialog = AlertDialog(
@@ -146,6 +148,15 @@ class ChannelState extends State<ChannelWidget> {
                   child: Icon(Icons.add),
                 ),
                 body: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFCCBF),
+                    image: DecorationImage(
+                      colorFilter: new ColorFilter.mode(
+                          Colors.black.withOpacity(0.83), BlendMode.dstATop),
+                      image: AssetImage("assets/"+widget.channel.channelName+".jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                   child: ListView.builder(
                       itemCount: 1,
                       itemBuilder: (context, index) {
